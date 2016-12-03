@@ -1,0 +1,35 @@
+[
+  {
+    "title": "Refactorable Reactjs",
+    "location": "React Sydney",
+    "date": "2016-12-05"
+  },
+  {
+    "title": "Modularity and Monorepositories",
+    "location": "JSconf.au",
+    "date": "2016-12-01"
+  },
+  {
+    "title": "Kappa Delta Lambda",
+    "location": "Sydney Node Ninjas",
+    "date": "2016-09-01",
+    "video": "https://vimeo.com/181700333"
+  },
+  {
+    "title": "100 Components and Counting",
+    "location": "React Sydney",
+    "date": "2016-08-01"
+  },
+  {
+    "title": "Universal Javascript as a Service",
+    "location": "SydJS",
+    "date": "2016-05-18",
+    "video": "https://www.youtube.com/watch?v=RKrgC0ueLKw"
+  },
+  {
+    "title": "Asynchronous Universal Javascript Components",
+    "location": "SydJS",
+    "date": "2016-02-08",
+    "video": "https://www.youtube.com/watch?v=pb72ZwjAw3Y"
+  }
+]

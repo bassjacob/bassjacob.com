@@ -1,0 +1,16 @@
+<ul class="talks__list">
+  $for(talks)$
+    <li>
+      <div>
+        <span class="talks__title">$title$</span>
+        @$location$ $date$
+        $if(slides)$
+        | <a href="$slides$">Slides</a>
+        $endif$
+        $if(video)$
+        | <a href="$video$">Video</a>
+        $endif$
+      </div>
+    </li>
+  $endfor$
+</ul>

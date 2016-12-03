@@ -1,0 +1,14 @@
+<ul class="posts__list">
+  $for(posts)$
+    <li class="posts__list-element">
+      <a class="posts__link" href="$url$">
+        <span class="posts__title">
+          $title$
+        </span>
+        $if(summary)$
+          <p class="posts__summary">$summary$</p>
+        $endif$
+      </a>
+    </li>
+  $endfor$
+</ul>

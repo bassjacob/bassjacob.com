@@ -1,8 +1,16 @@
-<div class="info">
-    Posted on $date$
-    $if(author)$
-        by $author$
-    $endif$
-</div>
+<div class="post__wrapper">
+  <div class="post__title">
+    $title$
+  </div>
 
-$body$
+  <div class="info">
+      Posted on $date$
+      $if(author)$
+          by $author$
+      $endif$
+  </div>
+
+  <hr />
+
+  $body$
+</div>

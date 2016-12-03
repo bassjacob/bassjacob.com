@@ -2,15 +2,58 @@
 title: Home
 ---
 
-<h2>Welcome</h2>
+<div class="card">
+  <header class="avatar">
+    <span class="avatar__container">
+      <img class="avatar__image" src="assets/images/avatar.jpg" alt="Jacob Bass"></img>
+    </span>
 
-<img src="/images/haskell-logo.png" style="float: right; margin: 10px;" />
+    <span class="avatar__title">Jacob Bass</span>
+  </header>
 
-<p>Welcome to my blog!</p>
+  <div class="latest">
+    <div class="latest__content">
+      <div class="latest__header">Latest Posts</div>
+      <ul class="latest__text">
+        $for(posts)$
+          <li class="latest__post">
+            <a title="$title$" href="$url$">
+              <span class="talks__title">$title$</span>
+            </a>
+          </li>
+        $endfor$
+      </ul>
+    </div>
 
-<p>I've reproduced a list of recent posts here for your reading pleasure:</p>
+    <div class="latest__content">
+      <div class="latest__header">Latest Talk</div>
 
-<h2>Posts</h2>
-$partial("templates/post-list.html")$
+      <div class="latest__text">
+        <span class="talks__title">$talkTitle$</span>
+        <br />
+        $talkLocation$ $talkDate$
 
-<p>…or you can find more in the <a href="/archive.html">archives</a>.</p>
+        <div class="latest__links">
+          $if(talkSlides)$
+          <a href="$talkSlides$">Slides</a>
+          $endif$
+
+          $if(talkVideo)$
+          <a href="$talkVideo$">Video</a>
+          $endif$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <footer>
+    <ul class="icons">
+      <li><a href="https://twitter.com/bassjacob" class="fa-twitter">Twitter</a></li>
+      <li><a href="https://linkedin.com/in/bassjacob" class="fa-linkedin">Linkedin</a></li>
+      <li><a href="mailto://me@bassjacob.com" class="fa-envelope">Gmail</a></li>
+      <li><a href="https://github.com/bassjacob" class="fa-github">Github</a></li>
+    </ul>
+  </footer>
+</div>

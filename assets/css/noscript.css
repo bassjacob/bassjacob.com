@@ -1,0 +1,11 @@
+body:after {
+  display: none;
+}
+
+#main {
+  -moz-transform: none !important;
+  -webkit-transform: none !important;
+  -ms-transform: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
