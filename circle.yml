@@ -1,9 +1,13 @@
 dependencies:
+  cache_directories:
+    - "~/.stack"
+    - ".stack-work"
   pre:
     - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 575159689BEFB442
     - echo 'deb http://download.fpcomplete.com/ubuntu trusty main'|sudo tee /etc/apt/sources.list.d/fpco.list
     - sudo apt-get update
     - sudo apt-get install stack -y
+    - npm install netlify-cli -g
   override:
     - stack setup
     - stack build
@@ -12,3 +16,9 @@ test:
   override:
     - stack exec site clean
     - stack exec site build
+
+deployment:
+  staging:
+    branch: master
+    commands:
+      - netlify -t $NETLIFY_TOKEN deploy -s bassjacobcom -p _site
