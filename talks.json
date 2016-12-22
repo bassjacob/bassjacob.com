@@ -1,5 +1,11 @@
 [
   {
+    "title": "Modularity and Monorepositories",
+    "location": "SydJS",
+    "date": "2016-12-21",
+    "video": "https://www.youtube.com/watch?v=Qu-5fycc5j8"
+  },
+  {
     "title": "Refactorable Reactjs",
     "location": "React Sydney",
     "date": "2016-12-05"
