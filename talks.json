@@ -1,5 +1,11 @@
 [
   {
+    "title": "Diving into JavaScript Promises",
+    "location": "SydJS",
+    "date": "2017-01-18",
+    "video": "https://www.youtube.com/watch?v=o2DLEc2TNYY"
+  },
+  {
     "title": "Modularity and Monorepositories",
     "location": "SydJS",
     "date": "2016-12-21",
