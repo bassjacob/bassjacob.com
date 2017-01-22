@@ -1,0 +1,59 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #282a36;
+    color: #f8f8f2;
+}
+
+section {
+    height: 98vh;
+    width: 98vw;
+    padding: 1vh 1vw;
+}
+
+section.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+section.hidden {
+    display: none;
+}
+
+section h1 {
+    color: #f8f8f2;
+    font-size: 150px;
+}
+
+section h2 {
+    color: #8be9fd;
+    font-size: 75px;
+}
+
+section h3 {
+    color: #ff79c6;
+    font-size: 37px;
+}
+
+section h4 {
+    color: #bd93f9;
+    font-size: 19px;
+}
+
+.primary {
+    color: #f8f8f2;
+}
+
+.secondary {
+    color: #8be9fd;
+}
+
+.tertiary {
+    color: #ff79c6;
+}
+
+.quaternary {
+    color: #bd93f9;
+}

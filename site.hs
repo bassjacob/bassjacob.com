@@ -34,6 +34,13 @@ main = do
         route   idRoute
         compile compressCssCompiler
 
+    match "presentations/*" $ do
+        route cleanRoute
+        compile $ getResourceBody
+            >>= loadAndApplyTemplate "templates/presentation.html" defaultContext
+            >>= relativizeUrls
+            >>= cleanIndexUrls
+
     match "posts/*" $ do
         route cleanRoute
         compile $ pandocCompiler
