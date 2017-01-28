@@ -1,22 +1,52 @@
 window.onload = window.onpopstate = function (event) {
   const slides = document.querySelectorAll('section');
   const query = document.location.search.slice(1).split('&').filter(q => q !== "").reduce((queries, query) => { const [key, value] = query.split('='); queries[key] = value || true; return queries; }, {});
-  let currentSlide = query.page = parseInt(query.page || '0');
+  let currentSlide = query.page = (event && event.state && event.state.page) || parseInt(query.page || '0');
 
   function goToSlide () {
     slides.forEach(function (slide, index) {
       if (index === currentSlide) {
-        return slide.classList.remove('hidden');
+        if (slide.querySelectorAll('section').length > 0) {
+          return nextSlide();
+        }
+
+        slide.classList.remove('hidden');
+        slide.classList.add('active');
+
+        if (slide.parentNode.nodeName === 'SECTION') {
+          slide.parentNode.classList.remove('hidden');
+          slide.parentNode.classList.add('active');
+        }
+
+        const codes = slide.querySelectorAll('code');
+        codes.forEach(code => {
+          const marks = code.querySelectorAll('mark');
+
+          if (marks.length === 0) {
+            hljs.highlightBlock(code);
+          } else {
+            code.style.color = 'grey';
+            marks.forEach(mark => {
+              hljs.highlightBlock(mark);
+            });
+          }
+          textFit(code);
+        });
+        return;
       }
 
-      return slide.classList.add('hidden');
+      slide.classList.add('hidden');
+      slide.classList.remove('active');
+
+      return;
     });
   }
 
   function onSlideEnter() {
     query.page = currentSlide;
     const search = '?' + Object.keys(query).map(key => `${key}=${query[key]}`).join('&')
-    history.pushState(query, document.title, `${document.location.origin}${document.location.pathname}${search}`);
+    const url = `${document.location.origin}${document.location.pathname}${search}`;
+    history.pushState(query, document.title, url);
     goToSlide();
   }
 
@@ -46,8 +76,5 @@ window.onload = window.onpopstate = function (event) {
     }
   }
 
-  currentSlide = (event && event.state && event.state.page) || 0;
   goToSlide();
 }
-
-hljs.initHighlightingOnLoad();

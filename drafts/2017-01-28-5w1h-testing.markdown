@@ -1,20 +1,8 @@
 ---
 title: 5W1H of Testing
+summary: A semi-transcript of a talk on how, when, where, why, who and what with regard to testing.
 ---
 
-<section class="center">
-    <h1>5W1H of Testing</h1>
-    <h2>Why, What, When, Where, Who, How</h2>
-</section>
-
-<section data-section-title="why">
-    <section><h1>why</h1></section>
-    <section><h1>software is made of decisions</h1></section>
-    <section><h1>requirements change over time</h1></section>
-    <section><h1>developers change over time</h1></section>
-</section>
-
-<section>
 Our industry almost universally agrees that writing tests for software is important. I find that while people talk a lot about writing tests, not that many end up writing them regularly.
 
 I think exploring the reasoning behind testing is useful to demonstrate the things testing can and cannot help us with. 
@@ -31,7 +19,7 @@ At times it might seem like your project manager drives the direction of a proje
 
 ### Requirements change over time
 
-Every piece of work we undertake, we add new decisions into the history of the project. Sometimes this requires removing or changing existing functionality. Even if we assume that our code works the way we intend it to at any given time, 
+With every piece of work we undertake, we add new decisions into the history of the project. Sometimes this requires removing or changing existing functionality. 
 
 ### Developers change over time as well
 
@@ -118,5 +106,3 @@ The natural lifecycle of a project involves a natural cadence of developers join
 ## Developer
 
 ### Commit to shipping tests along with code
-
-</section>

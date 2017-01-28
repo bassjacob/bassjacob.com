@@ -57,3 +57,10 @@ section h4 {
 .quaternary {
     color: #bd93f9;
 }
+
+pre {
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 1em;
+    width: 70vw;
+}
