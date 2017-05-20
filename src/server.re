@@ -4,6 +4,8 @@ external dirname : string = "__dirname" [@@bs.val];
 
 external send : Express.Response.t => 'a => Express.done_ = "" [@@bs.send];
 
+external set : Express.Response.t => string => string => unit = "" [@@bs.send];
+
 external listen : App.t => int => (Js.Null_undefined.t Js.Exn.t => unit) [@bs.uncurry] => unit =
   "" [@@bs.send];
 

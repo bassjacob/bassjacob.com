@@ -18,6 +18,7 @@ let routes = [
   AsyncRoute (GET, "/posts/:id", PostCell.Show.controller),
   AsyncRoute (GET, "/resume", PageCell.Index.controller),
   AsyncRoute (GET, "/talks", PageCell.Index.controller),
+  AsyncRoute (GET, "/sitemap.xml", SitemapCell.Index.controller),
   Use (ErrorCell.Index.controller Not_found),
   ErrorRoute (ErrorCell.Index.controller)
 ];
