@@ -3,6 +3,7 @@ module Helpers = {
 
   let promiseControllerErrorHandler next => {
     Js_promise.catch (fun z => {
+      Js.log z;
       z |> fromPromiseError
       |> Express.Next.error
       |> next

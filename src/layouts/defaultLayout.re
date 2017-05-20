@@ -1,8 +1,8 @@
 type locals = { title: string, content: string };
 
 let siteTitle = "Code, Coffee and CLI's";
-let siteTagline = "";
-let siteDescription = "";
+let siteTagline = "Occasional musings on software, through software.";
+let siteDescription = "Hi, I'm Jacob. Very occasionally I convince myself to write something here, but far more often I go and build something else instead.";
 
 let makeLocals ::title=siteTitle ::content="" () => {
   { title, content };
@@ -41,21 +41,30 @@ let render (locals: locals) () => {
 
     <div class="sidebar" id="sidebar">
       <nav class="sidebar-nav">
-        <a class="sidebar-nav-item" href="/">Home</a>
         <div class="sidebar-nav-item">
           <img src="/public/avatar.jpg"></img>
-          <div class="sidebar-item">
+          <div class="sidebar-item" style="padding: 0">
             <p>$(siteDescription)</p>
           </div>
         </div>
+        <a class="sidebar-nav-item" href="/">Home</a>
         <a class="sidebar-nav-item" href="/about">About</a>
         <a class="sidebar-nav-item" href="/talks">Talks</a>
         <a class="sidebar-nav-item" href="/posts">Posts</a>
         <a class="sidebar-nav-item" href="/resume">Resume</a>
+        <div class="sidebar-nav-item">
+          <p>Elsewhere</p>
+          <ul>
+            <li><a href="https://github.com/bassjacob">github</a></li>
+            <li><a href="https://twitter.com/bassjacob">twitter</a></li>
+            <li><a href="https://linkedin.com/in/bassjacob">linkedin</a></li>
+            <li><a href="mailto:bassjacob@gmail.com">email</a></li>
+          </ul>
+        </div>
       </nav>
 
       <div class="sidebar-item">
-        &copy; 2017. All rights reserved.
+        With thanks to <a href="https://twitter.com/mdo">@mdo</a> for the lanyon theme.
       </div>
     </div>
 

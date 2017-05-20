@@ -7,7 +7,9 @@ external send : Express.Response.t => 'a => Express.done_ = "" [@@bs.send];
 external listen : App.t => int => (Js.Null_undefined.t Js.Exn.t => unit) [@bs.uncurry] => unit =
   "" [@@bs.send];
 
-type middlewareFn = Request.t => Response.t => Next.t => done_;
+type errorMiddlewareFn = Middleware.errorF;
+
+type middlewareFn = Middleware.f;
 
 type asyncMiddlewareFn = Request.t => Response.t => Next.t => Js_promise.t done_;
 
@@ -21,6 +23,7 @@ type method =
   | DELETE;
 
 type route =
+  | ErrorRoute (errorMiddlewareFn)
   | AsyncRoute (method, string, asyncMiddlewareFn)
   | Route (method, string, middlewareFn)
   | Use middlewareFn
@@ -38,6 +41,7 @@ let extractAppMethod method =>
 
 let applyRoute server route =>
   switch route {
+  | ErrorRoute handler => App.use server (Middleware.fromError handler)
   | AsyncRoute (method, path, handler) =>
     (extractAppMethod method) server ::path (asyncFrom handler)
   | Route (method, path, handler) =>
