@@ -37,7 +37,7 @@ module Index = {
       |> SitemapLayout.render;
   };
 
-  let controller req res next => {
+  let controller _ res _ => {
     let _ = Server.set res "Content-Type" "text/xml";
 
     Js.Promise.all [|(mapPages ()), (mapPosts ())|]

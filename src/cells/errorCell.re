@@ -5,7 +5,7 @@ module Index = {
       |> (fun content => DefaultLayout.render content ());
   };
 
-  let controller err _ res _ => {
+  let controller _ _ res _ => {
     render ()
       |> Server.send res;
   };
