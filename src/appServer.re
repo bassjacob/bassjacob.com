@@ -20,6 +20,7 @@ let routes = [
   AsyncRoute (GET, "/posts/:id", PostCell.Show.controller),
   AsyncRoute (GET, "/resume", PostCell.Index.controller),
   AsyncRoute (GET, "/talks", PostCell.Index.controller),
+  Use (ErrorCell.Index.controller)
 ];
 
 makeServer routes (int_of_string port) (onListen port);
