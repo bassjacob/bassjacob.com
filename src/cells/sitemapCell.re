@@ -5,7 +5,7 @@ module Index = {
         Array.map (fun (page: string): SitemapLayout.url => {
           {
             location: "https://bassjacob.com/" ^ (Js.String.replace ".md" "" page),
-            changeFreq: "Weekly",
+            changeFreq: "weekly",
             priority: "1.0"
           };
         }) pages;
@@ -15,7 +15,7 @@ module Index = {
   let mapPosts _ => {
     let postsMap: SitemapLayout.url = {
       location: "https://bassjacob.com/posts/",
-      changeFreq: "Weekly",
+      changeFreq: "weekly",
       priority: "0.7"
     };
 
@@ -24,7 +24,7 @@ module Index = {
         Array.map (fun (post: string): SitemapLayout.url => {
           {
             location: "https://bassjacob.com/posts/" ^ (Js.String.replace ".md" "" post),
-            changeFreq: "Monthly",
+            changeFreq: "monthly",
             priority: "1.0"
           };
         }) posts;
