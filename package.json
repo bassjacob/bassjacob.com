@@ -1,0 +1,23 @@
+{
+  "name": "nxt",
+  "version": "0.0.1",
+  "dependencies": {
+    "bs-containers": "bassjacob/bs-containers",
+    "bs-express": "buckletypes/bs-express",
+    "bs-platform": "1.7.3",
+    "express": "^4.15.2",
+    "fs-extra": "2.0.0",
+    "gray-matter": "2.1.1",
+    "marked": "0.3.6",
+    "prismjs": "1.6.0",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-hot-loader": "next",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
+    "reason-react": "reasonml/reason-react",
+    "remarkable": "1.7.1",
+    "webpack": "^2.5.1",
+    "webpack-dev-server": "^2.4.5"
+  }
+}

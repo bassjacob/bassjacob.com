@@ -1,0 +1,18 @@
+{
+  "name": "replaceme",
+  "package-specs": [
+    "es6",
+    "commonjs"
+  ],
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": []
+    }
+  ],
+  "reason" : { "react-jsx" : true},
+  "bs-dependencies": [
+    "bs-express",
+    "reason-react"
+  ]
+}
