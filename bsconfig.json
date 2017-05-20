@@ -1,5 +1,5 @@
 {
-  "name": "replaceme",
+  "name": "bassjacob",
   "package-specs": [
     "es6",
     "commonjs"
@@ -7,7 +7,10 @@
   "sources": [
     {
       "dir": "src",
-      "subdirs": []
+      "subdirs": [
+        "cells",
+        "layouts"
+      ]
     }
   ],
   "reason" : { "react-jsx" : true},
