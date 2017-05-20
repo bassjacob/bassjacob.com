@@ -42,7 +42,7 @@ let render (locals: locals) () => {
     <div class="sidebar" id="sidebar">
       <nav class="sidebar-nav">
         <div class="sidebar-nav-item">
-          <img src="/public/avatar.jpg"></img>
+          <img style="border-radius: 100%" src="/public/avatar.jpg"></img>
           <div class="sidebar-item" style="padding: 0">
             <p>$(siteDescription)</p>
           </div>
@@ -64,7 +64,7 @@ let render (locals: locals) () => {
       </nav>
 
       <div class="sidebar-item">
-        With thanks to <a href="https://twitter.com/mdo">@mdo</a> for the lanyon theme.
+        With thanks to <a href="https://twitter.com/mdo">@mdo</a> for the <a href="http://lanyon.getpoole.com/">lanyon theme</a>.
       </div>
     </div>
 
