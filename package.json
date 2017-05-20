@@ -1,6 +1,11 @@
 {
   "name": "nxt",
   "version": "0.0.1",
+  "scripts": {
+    "build": "bsb -clean-world; bsb -make-world",
+    "postinstall": "npm run build",
+    "start": "node lib/js/src/appServer.js"
+  },
   "dependencies": {
     "bs-containers": "bassjacob/bs-containers",
     "bs-express": "buckletypes/bs-express",
