@@ -1,0 +1,15 @@
+export default class Eff<EA: Object, A> {
+  run: () => A;
+  constructor(run: () => A) {
+    this.run = run
+  }
+  map<B>(f: (_: A) => B): Eff<EA, B> {
+    return new Eff(() => f(this.run()))
+  }
+  chain<EB: Object, B>(f: (_: A) => Eff<EB, B>): Eff<EA & EB, B> {
+    return Eff.join(this.map(f))
+  }
+  static join<EA: Object, EB: Object, B>(x: Eff<EB, Eff<EA, B>>): Eff<EA & EB, B> {
+    return new Eff(() => x.run().run())
+  }
+}

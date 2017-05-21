@@ -1,0 +1,12 @@
+module MoreComplexComponent = {
+  include ReactRe.Component;
+  type props = {text: string, potentialText: string};
+  let name = "MoreComplexComponent";
+  let render {props} => {<div>(ReactRe.stringToElement props.text)</div>};
+};
+
+include ReactRe.CreateComponent MoreComplexComponent;
+
+let createElement
+  ::text
+  ::potentialText="a standin" = wrapProps { text, potentialText };

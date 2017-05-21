@@ -19,6 +19,8 @@ let routes = [
   AsyncRoute (GET, "/resume", PageCell.Index.controller),
   AsyncRoute (GET, "/talks", PageCell.Index.controller),
   AsyncRoute (GET, "/sitemap.xml", SitemapCell.Index.controller),
+  Static ("/presentations", Node_path.resolve dirname "../../../presentations"),
+  AsyncRoute (GET, "/presentations/:id", PresentationCell.Index.controller),
   Use (ErrorCell.Index.controller Not_found),
   ErrorRoute (ErrorCell.Index.controller)
 ];

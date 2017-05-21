@@ -9,7 +9,7 @@ A modification of the YLJ conference talk, this time aimed at F# developers who 
 
 ## Unreasonable Expectations
 <span class="post-date">@ Yow! Lambda Jam 2017-05-09</span>
-[Video Link (available soon)](#) | [Workshop Link](https://github.com/bassjacob/ylj-2017-workshop)
+[Video Link (available soon)](#) | [Workshop Link](https://github.com/bassjacob/ylj-2017-workshop) | [Slides](/presentations/ylj-2017-unreasonable-expectations)
 
 A high level overview of Reason, the new ocaml based language from Facebook. Given to a crowd of seasoned Functional Programming professionals and enthusiasts, this talk covers more of the complexity of the lanugage and less of the introduction. Also linked is the workshop that was run following this talk, giving a practical introduction to the language.
 

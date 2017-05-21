@@ -1,0 +1,161 @@
+---
+title: Unreasonable Expectations
+---
+<section>
+  <section>
+    <img src="assets/reasonml.png" />
+  </section>
+  <section style="flex-direction: row">
+    <div style="width: 100%">
+      <h2>OCaml</h2>
+      <pre class="language-ocaml" data-src="examples/before-ocaml"></pre>
+    </div>
+    <div style="width: 100%">
+      <h2>Reason</h2>
+      <pre class="language-reason" data-src="examples/after-reason"></pre>
+    </div>
+  </section>
+</section>
+<section>
+  <section>
+    <h1>A Sprinting Tour of the Syntax</h1>
+  </section>
+  <section>
+    <h2>functions</h2>
+    <pre class="language-reason" data-src="examples/functions"></pre>
+  </section>
+  <section>
+    <h2>parametric polymorphism</h2>
+    <pre class="language-reason" data-src="examples/poly-functions"></pre>
+  </section>
+  <section>
+    <h2>simple types</h2>
+    <pre class="language-reason" data-src="examples/types"></pre>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/poly-types"></pre>
+  </section>
+</section>
+<section>
+  <section>
+    <h1>
+      <small style="text-decoration:line-through">
+								ad hoc
+							</small> polymorphism
+    </h1>
+    <h3>highly recommended reading: http://ocamllabs.io/higher/lightweight-higher-kinded-polymorphism.pdf</h3>
+  </section>
+  <section>
+    <h1>Modules</h1>
+  </section>
+  <section>
+    <h2>types (signatures)</h2>
+    <pre class="language-reason" data-src="examples/modules-types"></pre>
+  </section>
+  <section style="flex-direction: column">
+    <h2>structures</h2>
+    <pre class="language-reason" data-src="examples/modules"></pre>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/module-usage"></pre>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/first-class-modules"></pre>
+  </section>
+  <section style="flex-direction: row">
+    <div style="width: 100%">
+      <h2>List.rei</h2>
+      <pre class="language-reason" data-src="examples/first-class-files-types"></pre>
+    </div>
+    <div style="width: 100%">
+      <h2>List.re</h2>
+      <pre class="language-reason" data-src="examples/first-class-files"></pre>
+    </div>
+  </section>
+  <section>
+    <h2>mutual recursion</h2>
+    <pre class="language-reason" data-src="examples/mutual-recursion-modules"></pre>
+  </section>
+  <section>
+    <h2>mutual recursion</h2>
+    <pre class="language-reason" data-src="examples/mutual-recursion-modules-2"></pre>
+  </section>
+  <section style="flex-direction: column">
+    <h1>functors</h1>
+  </section>
+  <section style="flex-direction: column">
+    <h1>Not this kind.</h1>
+    <h2>fmap :: Functor f => (a -> b) -> f a -> f b</h2>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/functors"></pre>
+  </section>
+  <section>
+    <h1>we could make fmap functors this way!</h1>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/fmap-functor"></pre>
+  </section>
+  <section style="flex-direction: row">
+    <div style="width: 100%">
+      <h2>option functor</h2>
+      <pre class="language-reason" data-src="examples/fmap-impl-option"></pre>
+    </div>
+    <div style="width: 100%">
+      <h2>list functor</h2>
+      <pre class="language-reason" data-src="examples/fmap-impl-list"></pre>
+    </div>
+  </section>
+  <section>
+    <h2>what's the opposite of ad-hoc?</h2>
+    <pre class="language-reason" data-src="examples/opposite-of-ad-hoc"></pre>
+  </section>
+</section>
+<section>
+  <section>
+    <h1>bucklescript</h1>
+  </section>
+  <section>
+    <pre class="language-javascript" data-src="examples/bucklescript-output"></pre>
+  </section>
+  <section>
+    <h1>React Bindings</h1>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/react-1"></pre>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/react-2"></pre>
+  </section>
+</section>
+<section>
+  <section>
+    <img width="70%" src="assets/why.gif" />
+  </section>
+  <section>
+    <h1>Can Programming Be Liberated From The Von Neumann Style?</h1>
+  </section>
+  <section>
+    <pre class="language-javascript" data-src="examples/spaghetti"></pre>
+  </section>
+  <section>
+    <pre class="language-jsx" data-src="examples/react"></pre>
+  </section>
+  <section>
+    <pre class="language-javascript" data-src="examples/flow"></pre>
+  </section>
+  <section>
+    <pre class="language-haskell" data-src="examples/haskell"></pre>
+  </section>
+  <section>
+    <h2>not because fp is more difficult.</h2>
+    <h2>because the <span style="color: green">meta-language</span> is daunting</h2>
+  </section>
+  <section>
+    <img src="assets/metalang.png" />
+  </section>
+  <section>
+    <h2>Can Programming Be Liberated From The Von Neumann Style?</h2>
+    <h1>yes!</h1>
+  </section>
+</section>

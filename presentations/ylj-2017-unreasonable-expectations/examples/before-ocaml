@@ -1,0 +1,3 @@
+let rec sigma f = function
+    | [] -> 0
+    | x :: l -> f x + sigma f l;;

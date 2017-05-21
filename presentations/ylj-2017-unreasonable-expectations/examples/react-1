@@ -1,0 +1,10 @@
+module SimpleComponent = {
+  include ReactRe.Component;
+  type props = { text: string };
+  let name = "SimpleComponent";
+  let render {props} => {<div> (ReactRe.stringToElement props.text) </div>};
+};
+
+include ReactRe.CreateComponent SimpleComponent;
+
+let createElement ::text = wrapProps { text: text };

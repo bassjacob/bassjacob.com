@@ -1,0 +1,4 @@
+let rec sigma f =>
+  fun
+  | [] => 0
+  | [x, ...l] => f x + sigma f l;
