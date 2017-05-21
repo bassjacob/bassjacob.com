@@ -49,8 +49,14 @@ let render {title, subtitle, content} => {
 	</head>
 	<body>
 		<div class="reveal">
-			<div style="position:absolute; top: 93%; left: 1%;">
-				@bassjacob
+			<div style="position:absolute; z-index: 2; top: 95%; right: 1%;">
+				<a href="https://bassjacob.com">bassjacob.com</a>
+			</div>
+			<div style="position:absolute; z-index: 2; width: 100%; top: 95%; text-align: center;">
+				$(title)
+			</div>
+			<div style="position:absolute; z-index: 2; top: 95%; left: 1%;">
+				<a href="https://twitter.com/bassjacob">@bassjacob</a>
 			</div>
 			<div class="slides">
 				<section>
@@ -79,8 +85,8 @@ let render {title, subtitle, content} => {
 				display: 'flex',
 				history: true,
 				width: "70%",
-				slideNumber: 'c/t',
 				transition: 'none',
+        controls: false,
 			});
 		</script>
 	</body>
