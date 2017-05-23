@@ -2,8 +2,9 @@
 title: A Selection of Talks I've Given
 ---
 
-## (Upcoming) An Introduction to Reason
+## An Introduction to Reason
 <span class="post-date">@ F# Sydney 2017-05-24</span>
+[Slides](/presentations/2017-05-24-fsharp-sydney)
 
 A modification of the YLJ conference talk, this time aimed at F# developers who are already familiar with much of OCaml's syntax.
 

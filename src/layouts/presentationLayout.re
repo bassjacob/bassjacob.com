@@ -34,6 +34,18 @@ let render {title, subtitle, content} => {
 				align-items: center;
 			}
 
+      .slides>section:nth-child(1)>h1 {
+        color: #fabbaf;
+      }
+
+      h1 {
+        color: #afbbfa !important;
+      }
+
+      h2 {
+        color: #baffab !important;
+      }
+
 			.reveal > pre:only-of-type {
 				width: 100% !important;
 			}
