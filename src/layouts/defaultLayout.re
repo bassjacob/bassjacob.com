@@ -64,6 +64,20 @@ let render (locals: locals) () => {
       </nav>
 
       <div class="sidebar-item">
+        <p>Themes</p>
+        <div class="themes">
+          <div data-theme-class="theme-base-00" class="theme-box theme-base-00"></div>
+          <div data-theme-class="theme-base-08" class="theme-box theme-base-08"></div>
+          <div data-theme-class="theme-base-09" class="theme-box theme-base-09"></div>
+          <div data-theme-class="theme-base-0b" class="theme-box theme-base-0b"></div>
+          <div data-theme-class="theme-base-0c" class="theme-box theme-base-0c"></div>
+          <div data-theme-class="theme-base-0d" class="theme-box theme-base-0d"></div>
+          <div data-theme-class="theme-base-0e" class="theme-box theme-base-0e"></div>
+          <div data-theme-class="theme-base-0f" class="theme-box theme-base-0f"></div>
+        </div>
+      </div>
+
+      <div class="sidebar-item">
         With thanks to <a href="https://twitter.com/mdo">@mdo</a> for the <a href="http://lanyon.getpoole.com/">lanyon theme</a>.
       </div>
     </div>
@@ -87,16 +101,22 @@ let render (locals: locals) () => {
 
     <script>
       (function(document) {
+        var body = document.querySelector('body');
         var toggle = document.querySelector('.sidebar-toggle');
         var sidebar = document.querySelector('#sidebar');
         var checkbox = document.querySelector('#sidebar-checkbox');
+        var themes = document.querySelectorAll('.theme-box');
 
         document.addEventListener('click', function(e) {
           var target = e.target;
 
-          if(!checkbox.checked ||
-             sidebar.contains(target) ||
-             (target === checkbox || target === toggle)) return;
+          if(target.classList.contains('theme-box')) {
+            body.classList.forEach(function(c) { body.classList.remove(c); });
+            body.classList.add(e.target.dataset.themeClass);
+            return;
+          } else if(!checkbox.checked || sidebar.contains(target) || target === checkbox || target === toggle) {
+            return;
+          }
 
           checkbox.checked = false;
         }, false);

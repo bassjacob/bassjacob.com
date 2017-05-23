@@ -427,7 +427,33 @@ a.pagination-item:hover {
  * Based on colors from Base16: http://chriskempson.github.io/base16/#default.
  */
 
+.themes {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  max-width: 8rem;
+}
+
+.theme-box {
+  width: 2rem;
+  height: 2rem;
+}
+/* Black */
+.theme-base-00.theme-box,
+.theme-base-00 .sidebar,
+.theme-base-00 .sidebar-toggle:active,
+.theme-base-00 #sidebar-checkbox:checked ~ .sidebar-toggle {
+  background-color: #202020;
+}
+.theme-base-00 .container a,
+.theme-base-00 .sidebar-toggle,
+.theme-base-00 .related-posts li a:hover {
+  color: #202020;
+}
+
 /* Red */
+.theme-base-08.theme-box,
 .theme-base-08 .sidebar,
 .theme-base-08 .sidebar-toggle:active,
 .theme-base-08 #sidebar-checkbox:checked ~ .sidebar-toggle {
@@ -440,6 +466,7 @@ a.pagination-item:hover {
 }
 
 /* Orange */
+.theme-base-09.theme-box,
 .theme-base-09 .sidebar,
 .theme-base-09 .sidebar-toggle:active,
 .theme-base-09 #sidebar-checkbox:checked ~ .sidebar-toggle {
@@ -452,6 +479,7 @@ a.pagination-item:hover {
 }
 
 /* Yellow */
+.theme-base-0a.theme-box,
 .theme-base-0a .sidebar,
 .theme-base-0a .sidebar-toggle:active,
 .theme-base-0a #sidebar-checkbox:checked ~ .sidebar-toggle {
@@ -464,6 +492,7 @@ a.pagination-item:hover {
 }
 
 /* Green */
+.theme-base-0b.theme-box,
 .theme-base-0b .sidebar,
 .theme-base-0b .sidebar-toggle:active,
 .theme-base-0b #sidebar-checkbox:checked ~ .sidebar-toggle {
@@ -476,6 +505,7 @@ a.pagination-item:hover {
 }
 
 /* Cyan */
+.theme-base-0c.theme-box,
 .theme-base-0c .sidebar,
 .theme-base-0c .sidebar-toggle:active,
 .theme-base-0c #sidebar-checkbox:checked ~ .sidebar-toggle {
@@ -488,6 +518,7 @@ a.pagination-item:hover {
 }
 
 /* Blue */
+.theme-base-0d.theme-box,
 .theme-base-0d .sidebar,
 .theme-base-0d .sidebar-toggle:active,
 .theme-base-0d #sidebar-checkbox:checked ~ .sidebar-toggle {
@@ -500,6 +531,7 @@ a.pagination-item:hover {
 }
 
 /* Magenta */
+.theme-base-0e.theme-box,
 .theme-base-0e .sidebar,
 .theme-base-0e .sidebar-toggle:active,
 .theme-base-0e #sidebar-checkbox:checked ~ .sidebar-toggle {
@@ -512,6 +544,7 @@ a.pagination-item:hover {
 }
 
 /* Brown */
+.theme-base-0f.theme-box,
 .theme-base-0f .sidebar,
 .theme-base-0f .sidebar-toggle:active,
 .theme-base-0f #sidebar-checkbox:checked ~ .sidebar-toggle {
