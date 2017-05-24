@@ -7,7 +7,7 @@ title: an introduction to reason
     <img src="assets/reasonml.png" />
   </section>
   <section>
-    <h1>the <i>reason</i> for reason?</h1>
+    <h1>the <i style="color: #cbaabc;">reason</i> for reason?</h1>
   </section>
   <section>
     <h2>can programming be liberated</h2>
