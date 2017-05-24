@@ -13,6 +13,7 @@ title: an introduction to reason
     <h2>can programming be liberated</h2>
     <h2>from</h2>
     <h2>the von neumann <small>(imperative)</small> style?</h2>
+    <a href="http://wwwusers.di.uniroma1.it/~lpara/LETTURE/backus.pdf">Required Reading</a>
   </section>
   <section>
     <img src="assets/metalang.png" />
@@ -50,10 +51,11 @@ title: an introduction to reason
 <section>
   <section>
     <h2>same same</h2>
+    <img src="assets/samesame.jpg" alt="">
     <h1>but different?</h1>
   </section>
   <section>
-    <h1>labeled arguments to functions</h1>
+    <h1>::labeled=arguments</h1>
   </section>
   <section>
     <pre class="language-reason" data-src="examples/labeled-args-1.re"></pre>
@@ -67,7 +69,8 @@ title: an introduction to reason
 </section>
 <section>
   <section>
-    <h1>first class modules</h1>
+    <h1>1st class modules</h1>
+    <h2>without classes</h2>
   </section>
   <section>
     <h2>types (signatures)</h2>
@@ -135,6 +138,26 @@ title: an introduction to reason
 <section>
   <section>
     <h1>gadt's</h1>
+    <h2>Generalised algebraic datatype</h2>
+  </section>
+
+  <section>
+    <h1><span style="opacity: 0.1">g</span>adt's</h1>
+    <h2><span style="opacity: 0.1">Generalised</span> algebraic datatype</h2>
+  </section>
+
+  <section>
+    <pre class="language-reason" data-src="examples/adt.re"></pre>
+  </section>
+
+  <section>
+    <pre class="language-reason" data-src="examples/adt-impossible.re"></pre>
+  </section>
+
+  <section><img src="assets/dave.jpg" alt=""></section>
+
+  <section>
+    <pre class="language-reason" data-src="examples/adt-impossible.re"></pre>
   </section>
 
   <section>
@@ -152,24 +175,37 @@ title: an introduction to reason
 
 <section>
   <section>
-    <h1>ppx</h1>
+    <h1>compile targets</h1><h2>and</h2><h1>interop</h1>
+  </section>
+
+  <section>
+    <h2>native compilation</h2>
+  </section>
+
+  <section>
+    <h2>bucklescript: <a href="https://github.com/bloomberg/bucklescript/">github</a></h2>
+    <img src="assets/bscript.png" alt="">
+  </section>
+
+  <section>
+    <h2>reactjs with native jsx: <a href="https://github.com/reasonml/reason-react/">github</a></h2>
+    <pre class="language-reason" data-src="examples/react.re"></pre>
   </section>
 </section>
 
 <section>
   <section>
-    <h1>FFI and Interop</h1>
+    <h2>OCaml is a really cool <span style="color: #ac4142;">language</span></h2>
+    <h2>Reason is a really nice <span style="color: #f4bf75;">syntax</span></h2>
   </section>
-
   <section>
-    <h1>native</h1>
+    <img width="60%" src="assets/captainplanet.gif" alt="">
   </section>
+</section>
 
+<section>
   <section>
-    <h1>bucklescript</h1>
-  </section>
-
-  <section>
-    <h1>reactjs</h1>
+    <h1>a new meetup</h1>
+    <h2><a href="https://www.meetup.com/reason-sydney/">meetup.com/reason-sydney</a></h2>
   </section>
 </section>
