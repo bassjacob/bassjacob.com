@@ -2,6 +2,8 @@
   "name": "nxt",
   "version": "0.0.1",
   "scripts": {
+    "watch:bsb": "bsb -make-world -w",
+    "watch:server": "nodemon -w lib -x npm start",
     "build": "bsb -clean-world; bsb -make-world",
     "postinstall": "npm run build",
     "start": "node lib/js/src/appServer.js"

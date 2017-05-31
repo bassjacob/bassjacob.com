@@ -99,6 +99,7 @@ let render {title, subtitle, content} => {
 				width: "70%",
 				transition: 'none',
         controls: false,
+        slideNumber: 'c/t'
 			});
 		</script>
 	</body>

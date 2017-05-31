@@ -1,0 +1,3 @@
+let obj = {
+  "key": "value"
+};

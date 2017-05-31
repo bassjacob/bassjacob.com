@@ -1,0 +1,11 @@
+// Inconsistent naming makes it harder
+// to scan and understand the code. It can also
+// lead to false expectations.
+const $element = $('.element');
+
+function _privateMethod () {
+  const self = $(this);
+  const _internalElement = $('.internal-element');
+  let $data = element.data('foo');
+  //... more logic.
+}
