@@ -2,6 +2,10 @@
 title: A Selection of Talks I've Given
 ---
 
+## Everything Happens for a Reason
+<span class="post-date">@ Node.Ninjas Sydney 2017-06-01</span>
+[Slides](/presentations/2017-06-01-nodeninjas-sydney)
+
 ## An Introduction to Reason
 <span class="post-date">@ F# Sydney 2017-05-24</span>
 [Video](https://www.youtube.com/watch?v=XWj24mn-wUA) | [Slides](/presentations/2017-05-24-fsharp-sydney)
