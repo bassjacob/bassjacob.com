@@ -1,0 +1,16 @@
+class Functor f where
+  (<$>) :: (a -> b) -> f a -> f b
+
+infixl 4 <$>
+
+instance Functor Id where
+  (<$>) :: (a -> b) -> Id a -> Id b
+  (<$>) f (Id a)= Id (f a)
+
+instance Functor List where
+  (<$>) :: (a -> b) -> List a -> List b
+  (<$>) f = foldRight (\a b -> f a:.b) Nil
+
+instance Functor Optional where
+  (<$>) :: (a -> b) -> Optional a -> Optional b (<$>) _ Empty = Empty
+  (<$>) f (Full a) = Full (f a)
