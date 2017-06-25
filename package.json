@@ -11,7 +11,7 @@
   "dependencies": {
     "bs-containers": "bassjacob/bs-containers",
     "bs-express": "buckletypes/bs-express",
-    "bs-platform": "1.7.3",
+    "bs-platform": "1.7.5",
     "express": "^4.15.2",
     "fs-extra": "2.0.0",
     "gray-matter": "2.1.1",
@@ -26,5 +26,8 @@
     "remarkable": "1.7.1",
     "webpack": "^2.5.1",
     "webpack-dev-server": "^2.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "1.11.0"
   }
 }
