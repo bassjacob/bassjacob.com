@@ -1,0 +1,1923 @@
+---
+title: Universal Reason
+date: 2017/09/29
+type: post
+draft: true
+summary: Using ReasonML to make the possible impossible. (Presented at Strangeloop).
+---
+
+<section>
+  <section>
+    <img src="/public/assets/sad_finder_face.png" />
+
+    <aside class="notes">
+      <ul>
+        <li>verify program behaviour</li>
+        <li>correct software is hard</li>
+        <li>dev exp, qual life, reliab, d2d exp</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      This is how I often feel trying to verify program behaviour working as a web developer in a dynamic-typed language. Writing correct software is hard. And it's especially hard with most of the web stacks that are popular at present.
+
+      <br /><br />Today I'm going to speak about developer experience, specifically where it can be improved by using a language like Reason. This is a talk about how to improve the quality of the software you create, improving the reliability of your product, improving the day to day experience of your working life.
+    </aside>
+  </section>
+
+  <section>
+    <div>
+      <h2>the paradox of choice</h2>
+        <pre><code class="language-haskell">
+?? :: a -> a
+
+</code></pre>
+      </div>
+
+    <aside class="notes">
+      <ul>
+        <li>how many implement</li>
+        <li>no restriction on inputs</li>
+        <li>wide breadth of applicability</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      How many functions do you think you can write that implement that type signature? What you see here is the "type signature" of a function, yet unnamed, that will take a value of a certain type, represented by the "type variable" (aka. "generic" or "template") "a" and must return a value of that same type.
+
+      <br /><br />The function has no other information about the possible inputs and outputs than that, meaning it can operate on literally any possible type.
+
+      <br /><br />That's a wide breadth of applicability. So how many functions do you think you can write that obey this signature?
+    </aside>
+  </section>
+
+  <section>
+    <div>
+      <h2>the only implementation</h2>
+      <pre><code class="language-haskell">
+id :: a -> a
+
+</code></pre>
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>constrict to no side effects</li>
+        <li>only one thing to do</li>
+        <li>return and nothing else</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      If we constrict our answers to functions that have no side effects, and who are guaranteed to return (no infinite recursion, or looping), then from the perspective of the types there is only one thing this function can do.
+
+      <br /><br />It must return the input, and perform nothing else.
+    </aside>
+  </section>
+  <section>
+    <h2>code without types = restrictions++</h2>
+
+    <aside class="notes">
+      <ul>
+        <li>freedom -> restriction</li>
+        <li>no specifics</li>
+        <li>counter-intuitive</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      The absolute freedom granted by the types also absolutely restricts the implementation. Because we don't restrict the types, we also cannot perform any actions that are type specific, leaving us only one course of action.
+
+      <br /><br />It sounded counter-intuitive to me the first time I was presented with the idea that making it harder to write certain cases would be freeing rather than constricting.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code class="language-javascript">
+function handleDates(type) {
+  const validTypes = ['createdAt', 'updatedAt'];
+
+  return function (date) {
+    if (!validTypes.includes(type) return [];
+    if (typeof date === 'string') return handleString(date, type);
+    if (_.isPlainObject(date)) return handleObject(date, type);
+
+    return [];
+  };
+}
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>infinite freedom, lower predict and sure</li>
+        <li>rely on naming rather than tooling</li>
+        <li>runtime exceptions rather than compile errors</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Dynamic typed programs tend to look a lot like this snippet. They grant us infinite freedom of expression, at the cost of predictability or sureness. We begin to rely on variable naming and comments rather than tools and compilers to instruct us on the allowed inputs and outputs. And we have to gate each command and listen for exceptions in order to avoid runtime errors.
+    </aside>
+  </section>
+  <section>
+    <pre><code class="language-java">
+final ApplicationContext context = new ClassPathXmlApplicationContext(SPRING_XML);
+final FizzBuzz myFizzBuzz = (FizzBuzz) context.getBean(STANDARD_FIZZ_BUZZ);
+final FizzBuzzUpperLimitParameter upperLimit = new DefaultFizzBuzzUpperLimitParameter();
+myFizzBuzz.fizzBuzz(fizzBuzzUpperLimit.obtainUpperLimitValue());
+
+((ConfigurableApplicationContext) context).close();
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>trade freedom against predict</li>
+        <li>frustrating difficult unsafe</li>
+        <li>tradeoff makes sense</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      I think a lot of us trade this freedom against predictability, because a lot of languages that offer restriction do so in ways that are frustrating, or difficult, or even unsafe.
+
+      <br /><br />And the trade-off makes sense.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code class="language-reason">
+let handleDates (type: query) (date: elem 'a): (list 'b) => {
+  switch (date) {
+  | DateString str => handleString type date
+  | DateObject obj => handleObject type date
+  };
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>have cake and eat it too</li>
+        <li>types to assist compiler not everywhere</li>
+        <li>minimum of boilerplate</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      But what if there was a way to have your cake and eat it too? What if you could write your program with the bare minimum of type annotations, and only add them to assist cases where the compiler can't figure it out? While being type safe?
+
+      <br /><br />What I'll show is the comparative value in using a language like ReasonML across the common stack of a webapp, and how removing the paradox of choice can help.
+
+      <br /><br />Most importantly, how to do it with the minimum of boilerplate, and in a way that you can teach the people on your team, and bring them along on this journey.
+    </aside>
+  </section>
+
+  <section>
+    <img width="70%" src="/public/assets/reasonml.png" />
+
+    <aside class="notes">
+      <ul>
+        <li>reason based on OCaml</li>
+        <li>developed by facebook, created by creator of react</li>
+        <li>positioned as introductory fp</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Introducing Reason. Reason is a language based on the fantastic OCaml language, a statically-typed functional programming language in the ML-family. Reason is currently being developed by Facebook primarily, and is positioned as an introductory fp language with similar goals to Elm. I'll be introducing concepts as we go, so don't worry if you don't know any OCaml or Reason or anything.
+    </aside>
+  </section>
+
+  <section>
+    <div style="min-width: 100%; text-align: left">
+      <h3>reasons for reason</h3>
+      <h2>rich data structures for abstraction</h2>
+    </div>
+
+    <aside class="content">
+      Reason contains a number of tools that enable you to write modular code that abstracts over common principles in a clean, safe way.
+    </aside>
+  </section>
+
+  <section>
+    <div style="min-width: 100%; text-align: left">
+      <h3>reasons for reason</h3>
+      <h2>pragmatic immutability</h2>
+    </div>
+
+    <aside class="content">
+      Reason is immutable by default, which saves you the need to enforce immutability through the use of a library which would slow down data access or usage. It also contains a number of escape hatches should you definitely need access to mutability, both as a primitive as well as through the very strong Object-Oriented flow.
+    </aside>
+  </section>
+
+  <section>
+    <div style="min-width: 100%; text-align: left">
+      <h3>reasons for reason</h3>
+      <h2>type inference</h2>
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>favourite pieces type inference</li>
+        <li>so powerful only write for libraries</li>
+        <li>write flexible code quickly, refactor safely</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      One of my favourite pieces of Reason, the type inference is so strong you almost never need to write type annotations. I find myself writing types for libraries, or code where I want to design by interface, and letting the program infer from behaviour the majority of the time. This leads you to write code very flexibly without needing to worry about whether you've broken anything by changing a value or type.
+    </aside>
+  </section>
+
+  <section>
+    <div style="min-width: 100%; text-align: left">
+      <h3>reasons for reason</h3>
+      <h2>compilation targets</h2>
+    </div>
+
+    <aside class="content">
+      Reason has a number of compile-targets, including native, micro-controller, mobile native and JavaScript.
+    </aside>
+  </section>
+
+  <section>
+    <img width="70%" src="/public/assets/reasoninmyv8.png" />
+
+    <aside class="notes">
+      <ul>
+        <li>reason compelling for web and genpurpose</li>
+        <li>interop through FFI, bindings to external JS call from in reason</li>
+        <li>applies generally</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      It's actually this feature that makes reason so compelling, especially for web and general purpose development. Through the usage of the bucklescript compiler, it provides a wonderful interoperability with the JavaScript ecosystem.
+
+      <br /><br />To interop with JavaScript, we make use of the Foreign Function Interface (or FFI) from the bucklescript compiler. This allows you to write typed bindings to external JavaScript functions, and call them from inside Reason as if they were Reason functions.
+
+      <br /><br />While the majority of the techniques discussed apply to reason, and to statically typed fp in general, I'll also discuss some features that are unique to the JavaScript interop process.
+    </aside>
+  </section>
+</section>
+
+<aside class="content">
+  <hr />
+</aside>
+
+<section>
+  <section>
+    <div>
+      <h1>backends are brittle</h1>
+      <h2>return types have your back</h2>
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>~05:00</li>
+        <li>core of web is backend</li>
+        <li>important both correct and predictable. seldomly</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      While I've enjoyed frontend work for as long as React has been around, the core of a web application for me has always been the backend. Mostly because the backend is usually connected directly to the "source of truth" for the application, the persistance layer.
+
+      <br /><br />Because of this, it's very important to me that the backend behave in a way that is both correct and predictable. But they so seldomly do.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code class="language-javascript">
+function (req, res, next) {
+  if (req.body.sendOne) {
+    return res.send('1');
+  } else if (req.body.sendTwo) {
+    return res.send('2');
+  }
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>standard part of backend, dangerous pattern</li>
+        <li>doesn't contain s1 or s2 or b is null</li>
+        <li>house built on foundations of straw</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      This code is an example of a standard part of every backend javascript project I've worked on. It's also an example of a dangerous pattern that's been lurking in every corner. Can you spot it? I see errors like this at least once a week. Unfortunately, there isn't an easy way to lint for these problems without writing lint-rules that are specific to controllers.
+
+      <br /><br />The lurking problem is if the body doesn't contain either sendOne or sendTwo or itself is null. In that case, we don't respond to the client, timing out and not returning any useful information. A house built on foundations of straw rather than stone. So how could we begin solving this?
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+function(must, take, meaningful, arguments) {
+  return "results of inner computation";
+}
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>enforce that controller respond</li>
+        <li>fun that may not call too free. not allow to not call</li>
+        <li>functions, as all expr must return a meaningful value</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Our first approach should take care to enforce that the controller responds to the client. We want to insist that for all logic branches inside a controller, we definitely call either respond or handle error.
+
+      <br /><br />To put this another way, a function that may or may NOT call res.send() has too much freedom. We want our controller functions to have a more restrictive type, one that does not allow it NOT to call res.send(). Only then will our compiler be able to spot these bugs for us.
+
+      <br /><br />To do this, we have to write the operations such that they return a meaningful value, and so that the controller itself returns a value. This is where the type system of Reason shines bright.
+
+      <br /><br />Working with the Reason ffi for express is a treat (in many ways much nicer than working with express directly).
+    </aside>
+  </section>
+
+  <section>
+    <pre><code class="language-reason">
+/* in express.re */
+type done_;
+
+module Request = { /* the req impl */ };
+module Response = { /* the res impl */ };
+module Next = { /* the next impl */ };
+module Middleware = { /* the middleware impl */ };
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>overview of express-js</li>
+        <li>look at tricks for well-typed bindings</li>
+        <li>define type done_ indicate end</li>
+        <li>module, ecapsulate types and cuntions</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      This is an overview of the binding for the express-js library. We're going to take a look at some tricks for writing a well-typed binding to the express library, using that to build a strong foundation for our app. We define a type done_ that we are going to use to indicate a function that should end the middleware traversal.
+
+      <br /><br />We also introduce a new unit of abstraction, the module. The module is just about the best thing about the Reason type system. It's a beautiful way to encapsulate types, data and functionality and expose a public interface to any consumers while hiding private implementation details.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module Request = {
+  type t;
+};
+
+module Response = {
+  type t;
+
+  external sendHTML: t => string => done_ = "send" [@@bs.send];
+  /* transpiles to t.send("the string passed") */
+};
+
+module Next = {
+  type t = (Js.Nullable.t 'a => done_);
+}
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>first module impl. type t</li>
+        <li>define sendHTML bind send html. return done.</li>
+        <li>define Next.t Js.Nullable.t allow it null</li>
+        <li>use inside cont signal contr finishes.</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Here we see our first module implementations: the Request and Response modules. We define these modules as having an internal type t, a convention in the Reason world to denote a "main"-type inside the module.
+
+      <br /><br />We have a very lean Request module for this example since we don't do very much with it. The Reponse module also has an internal type t, and contains a binding to an external function. This is the FFI provided by Reason and by the bucklescript tojs compiler.
+
+      <br ><br />We define a method sendHTML to bind to the response object's send method to send an html string to the client. We indicate that this function will "end" the request-response cycle by having it "return" done_. This function will call the named function on the first value passed to it, denoted by the [@@bs.send] tag.
+
+      <br /><br />We also create a lean Next module for the final parameter of the controller. This "next" parameter may be omitted in the underlying JS code, so we encapsulate it in a structure (JS.Nullable.t) that allows it to be null. In general, values cannot be null in Reason, unless you explicitly allow them to be. This allows the compiler to make sure you don't forget to handle the null case.
+
+      <br /><br />The use of either of these methods used inside a controller should signal that the controller finishes it's request response cycle at that point.
+
+    </aside>
+  </section>
+  <section>
+    <pre><code>
+module Middleware = {
+  type t = Request.t => Response.t => Next.t => done_;
+};
+
+module App = {
+  type t;
+  external make: unit => t = "" [@@bs.module "express"];
+  external get: t => string => Middleware.t => unit = "" [@@bs.send];
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>now ready to write the types. def as req res next returning done_</li>
+        <li>only way to get done_ is sendhtml or next, proving it responds</li>
+        <li>regardless of controller logic, compile time proof of response</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      We're now ready to write the types for our middleware module. We create a type t to store the type of a middleware in our system. We define a middleware as taking a Request.t object, a Response.t object, a Next.t function and returning a done_ type.
+
+    <br /><br />WHY? Because the only way for our middleware function to be able to return a done_ value, is by calling sendHTML or Next.t and grab their return value. If there is a branch where the programmer forgets to call sendHTML or Next.t and grab the done_ value, that branch will not be able to return a done_ value at all, and the compiler will find the bug at compile time, instead of having the app malfunction at runtime!
+
+      <br /><br />This way, regardless of what we do inside the middleware function, we know at compile time that we definitely respond to the user correctly.
+
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+let app = App.make ();
+let f req res next => {
+  switch (parseRequest req.body) {
+  | None => next (Js.Nullable.from_opt (Some "Incorrect Body"))
+  | (Some SendOne) => Response.sendHTML "<html>one</html>"
+  | (Some SendTwo) => Response.sendHTML "<html>two</html>"
+  };
+};
+App.get app "/numbers" f;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>switch, pattern match compile time like if between variant and code branch to execute</li>
+        <li>ergonomic different functions on inner type, ADT's</li>
+        <li>theory parseRequest, returns optional. None => error, Some => send</li>
+        <li>everything is inferrable!</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Now we can write a controller. We define a function, f that accepts req, res and next, and performs some logic.
+
+      <br /><br />We're also introduced to a new language feature, the switch keyword. this performs pattern matching, a compile-time feature similar to an "if", that allows you to define a mapping between a variable type and the code branch to execute. in practice, it is one of the more ergonomic ways to examine a value and perform different functions on the inner type depending on what it is, and is often used to destructure an algebraic data type to perform operations on the inner value;
+
+      <br /><br />In this case, we use a theoretical function parseRequest that we can see returns an optional type. If the optional type is None, we say that an error occurred and use the next function to indicate an error occurred. Otherwise, we see that it can return Some containing either SendOne or SendTwo.
+
+      <br /><br />If either of these occur we respond to the client with the html produced. We have a compilable program, and outside of the library bindings we have written 0 type annotations.
+
+      <br /><br />Everything is inferrable!
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+let app = App.make ();
+let f req res next => {
+  switch (parseRequest req.body) {
+  | (Some SendOne) => Response.sendHTML "<html>one</html>"
+  }; /* Warning incomplete pattern match.
+
+  /*
+    Warning 8: this pattern-matching is not exhaustive.
+    Here is an example of a value that is not matched:
+    None
+    Some SendTwo
+  */
+};
+App.get app "/numbers" f;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>when we make a mistake, compiler alerts</li>
+        <li>by using explicit nullable, option type, billion dollar mistake</li>
+        <li>pushing errors into type system, compiler checks that we handle them.</li>
+        <li>foo is not a method on undefine.</li>
+        <li>compiler will tell us what we've forgotten and where</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Even better! When we make a mistake, our friendly compiler alerts us to what's missing. In this case, our pattern match reminds up we've forgotten to handle SendTwo and None, resulting in an incomplete pattern match.
+
+      <br /><br />Not only that, but by using explicit nullable aka. "option" types explicit nullables, we avoid the billion dollar mistake of allowing null into our program. By pushing null conditions into our type system and handling them as values, such as None and Some, we can be sure at compile time that we don't have any surprises lurking as dynamic values. We never have to remember a null check, or hear about ".foo is not a method on undefined" or any of that terribly behaviour.
+
+
+      <br /><br />The compiler will tell us what we've forgotten, and where.
+    </aside>
+  </section>
+
+  <section>
+    <h2>
+      solid foundations built atop the compiler
+    </h2>
+
+    <aside class="notes">
+      <ul>
+        <li>solidified one aspect</li>
+        <li>lets look at frontend</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      We've solidified one aspect of our backend system, improving both its correctness as well as its performance reliability. Let's now take a look at the frontend.
+    </aside>
+  </section>
+</section>
+
+<aside class="content">
+  <hr />
+</aside>
+
+<section>
+  <section>
+    <div>
+      <h1>frontends are fragile</h1>
+      <h2>but you can infer their purpose</h2>
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>~12:00</li>
+        <li>though fe code slung with abandon, many efforts, </li>
+        <li>from within sisyphean task, though admirable.</li>
+        <li>never designed for correctness, well out of your way.</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Historically, frontend code on the web has been slung with abandon, many efforts have been undertaken to provide a more formal approach to frontend design and development. Doing this from within the existing ecosystem is a Sisyphean task, though an admirable one. Because the languages of the frontend web were never designed for correctness, you have to go well out of your way to ensure your code is correct.
+    </aside>
+  </section>
+
+  <section>
+    <h2>React Developers?</h2>
+
+    <aside class="notes">
+      <ul>
+        <li>enjoying reactjs?</li>
+        <li>latest and greatest from fb and jordan</li>
+        <li>full circle, SML close cousin. ml promised land</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Anyone out there enjoying using ReactJS? Reason is the latest and greatest invention from the brains behind ReactJS. Unsurprisingly, it has excellent first class support for the framework, from backend to frontend. This actually brings ReactJS's legacy full circle. Given that React's first implementation was actually in SML, a close cousin to OCaml and Reason.
+
+      <br /><br />With Reason, we find ourselves back in the ML promised land.
+
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+class Greeting extends React.Component {
+  static propTypes = {
+    message: PropTypes.string,
+  }
+
+  render() {
+    return <span>{this.props.message}</span>
+  }
+}
+
+&lt;Greeting message="Hello Strangeloop!" /&gt;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>start canonical</li>
+        <li>prop-types 0.3 runtime prop inspection</li>
+        <li>mechanism lean on validate</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Let's start with the canonical hello world program. We create a Greeting component that takes a string named message and render it inside a span.
+
+      <br /><br />We ensure this using a ReactJS concept called prop-types. From at least as far back as 0.3 (2013) ReactJS has included the concept of prop-types. prop-types are a runtime type inspection of the values passed as arguments to a ReactJS component. This is the mechanism that pure-js ReactJS users lean on to validate the types of props being passed to components.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+&lt;Greeting message={() => {}} /&gt;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>trouble as with all dynamic</li>
+        <li>must trace each path of codebase to ensure</li>
+        <li>small works, larger keep in head</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      The trouble with prop-types, as with all dynamic, runtime "type" solutions, is that they can only tell you about code paths you run. The pressure is on you to trace each path of your codebase and ensure these dynamic checks pass. For a small application this works, but as soon as you're larger than you can keep in your head, the pain of rendering every component in every configuration to test prop-types becomes unbearable.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module Greeting = {
+  let component = ReasonReact.statelessComponent "Greeting";
+  let make ::message _children => {
+    ...component,
+    render: fun _self => <span> (ReasonReact.stringToElement message) </span>
+  };
+}
+
+&lt;Greeting message="Hello Strangeloop" /&gt;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>reasonreact strongly typed compile</li>
+        <li>is a module extends returned</li>
+        <li>override defaults in make</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      In Reason, ReactJS components are strongly typed at compile time, conferring all the benefits outlined before. A reason-react component is a module with a method make, that "extends" the returned template component from the ReasonReact library, in this case a stateless component. We provide the render method, and take the defaults from the template.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+/* complains about unused a */
+let f a => 1;
+
+/* doesn't say a word */
+let f _a => 1;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>unused func param prepended with _</li>
+        <li>ignored in body if used error</li>
+        <li>normal not used warning</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Some new syntax here, the concept of an unused function parameter. In a function definition, any variables prepended with _ will be ignored in the body of the function. This allows us to write the variable names for documentation or refactoring purposes but not worry about linting or compiler warnings about them not being used.
+
+      <br /><br />If we try access them from inside the function body the compile fails. As soon as we remove the underscore, the variable is considered available to the body of the function, as well as warned about.
+    </aside>
+  </section>
+  <section>
+    <pre><code>
+let add ::x=1 ::y=2 z => x + y;
+
+let addOne = add x::1;
+
+let three = addOne y::2 0;
+
+let addTwo = add y::2;
+
+let five = add x::2 1;
+
+let four = add 1;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>design partial application by name and position</li>
+        <li>func add, z terminal x y optional</li>
+        <li>apply in any order, done with terminal z</li>
+        <li>apply in different order, done with terminal z</li>
+        <li>apply only terminal z, defaults</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Also new are labeled args. They allow us to design for partial application of a function, not only by position, but by name. So rather than a function you have to wrap in lambdas to build partially applied closures, or the liberal usage of flip that Haskell enjoys, you can define a function with labeled args and apply them in any order.
+
+      <br /><br />We create a function named add, that takes two labeled args x and y, and a non-labeled arg z. The z is important, as a non-labeled arg in a terminal position, it allows us to conside the labeled args optional, replaced by the defaults provided in the function definition.
+
+      <br /><br />We partially apply add by passing x bound to 1, which we then further apply by passing y bound to 2, and 0 in the terminal position. Because there is a non-labeled argument, Reason will not consider the function fully applied until at least the terminal non-labeled arg is applied. We can apply labeled args in any order, regardless of how they are defined.
+
+      <br /><br />We create a function called addTwo, this time first applying y bound to 2, then later applying x as 2, and 1 in the terminal position as z. Lastly, we see the greatest application of this feature. When defining four, we eschew both x and y, only choosing to apply z in the terminal position.
+
+      <br /><br />Given the final terminal arg, Reason will apply x and y automatically with their default args, setting them to 1 and 2 respectively and applying z, returning 4. Beautiful default args with full type safety!
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module Greeting = {
+  let component = ReasonReact.statelessComponent "Greeting";
+  let make ::message _children => {
+    ...component,
+    render: fun _self => <span> (ReasonReact.stringToElement message) </span>
+  };
+}
+
+&lt;Greeting message="Hello Strangeloop" /&gt;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>back2example ignore children since not using</li>
+        <li>labeled args for message, infer type from usage</li>
+        <li>children must be reactelement. use helpers to convert other types</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Back to our example, we can see we use labeled args in our make function. We imply usage of a prop message, which the compiler will infer as of type string thanks to the usage of stringToElement in the body.
+
+      <br /><br />reason-react doesn't have as loose a definition of what can be passed as children. Anything other than a ReactJS element will fail to compile, requiring us to first convert the variable to an element using the provided helper.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module Greeting = {
+  let component = ReasonReact.statelessComponent "Greeting";
+  let make ::message="Hello from Australia!" _children => {
+    ...component,
+    render: fun _self => <span> (ReasonReact.stringToElement message) </span>
+  };
+}
+
+&lt;Greeting message="Hello Strangeloop" /&gt; /* renders Hello Strangeloop */
+&lt;Greeting /&gt; /* renders Hello Australia */
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>wotif sometimes message</li>
+        <li>msg has default children is in final position</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      What about if we wanted to sometimes pass a message, but fallback to a default. Because reason-react components are just Reason functions, we can lean on the syntax for labeled args just like we did before.
+
+      <br /><br />We give message a default value, and if we don't pass it when rendering the component, the default will be applied.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+type action = | Click | Restart;
+type state = {clicks: int, restarts: int};
+
+let component = ReasonReact.reducerComponent "Greeting";
+let make _children => {
+  ...component,
+  initialState: fun () => {clicks: 0, restarts: 0},
+  reducer: fun action state =>
+    ReasonReact.Update @@ switch action {
+    | Click => {...state, clicks: state.clicks + 1}
+    | Restart => {clicks: 0, restarts: state.restarts + 1}
+    },
+  render: fun {state, reduce} => (
+    &lt;span&gt;
+      &lt;button onClick=(reduce (fun _event =&gt; Click))&gt;Click Me&lt;/button&gt;
+      (ReasonReact.stringToElement @@ string_of_int state.clicks)
+      &lt;button onClick=(reduce (fun _event =&gt; Restart))&gt;Restart Me&lt;/button&gt;
+    &lt;/span&gt;
+  )
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>unlike some fe state mgmt rr compartmentalise</li>
+        <li>reducer component define state and hold.</li>
+        <li>cbs change state cause re-render</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Unlike some frontend state management tools, reason-react allows you to compartmentalise your state at the level that makes sense for you.
+
+      <br /><br />It does so by a concept called a "reducer component". This component allows you to define a state type, and hold an instance of it. By passing callbacks that mutate this state, we trigger render changes in the component and all of its children.
+
+      <br /><br />But that's way too big an example to swallow in one bite. Let's break it up.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+type action = | Click | Restart;
+type state = {clicks: int, restarts: int};
+
+let component = ReasonReact.reducerComponent "Greeting";
+let make _children => {
+  ...component,
+  initialState: fun (): state => ...
+  reducer: fun (action: action) (state: state) => ...
+  render: fun {(state: state), reduce} => ...
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>define RR.reducer different defs</li>
+        <li>define types for actions and state</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      We first define a component using ReasonReact.reducerComponent, which creates a component with a different set of default functions to the statelesscomponent before.
+
+      <br /><br />We also define types for the actions we want to respond to, and the state we want to store and change in response to these actions. I've added annotations so you can see where the types are applied.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+initialState: fun (): state => {clicks: 0, restarts: 0},
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>override initialState</li>
+        <li>store state to hold vals</li>
+        <li>change when interaction</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      The first we override is the initialState function. This function is called when the component is first created, and intializes the state for the component. In this case, we initialise a Reason object to hold our clicks and restarts variables. This is the object we are going to change when a user interacts with this component.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+reducer: fun (action: action) (state: state) =>
+  ReasonReact.Update @@ switch action {
+  | Click => {...state, clicks: state.clicks + 1}
+  | Restart => {clicks: 0, restarts: state.restarts + 1}
+  },
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>define reducer, action state => new state</li>
+        <li>accepts message of type action and rx state from component</li>
+        <li>pattern match on action and return new state</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      We then define a reducer. A reducer is a function of action and state that returns updated state. This is a property on the component that we invoke when we want to change the stored state to a new value.
+
+      <br /><br />This reducer accepts messages we restrict to the action type we defined above. Inside this method, we pattern match on the action invoked and return an updated state as a result.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+render: fun {(state: state), reduce} => (
+  let clickMessage = "Clicked " ^ (string_of_int state.clicks) ^ " times(s)";
+  &lt;span&gt;
+    &lt;button onClick=(reduce (fun _event =&gt; Click))&gt;Click Me&lt;/button&gt;
+    (ReasonReact.stringToElement clickMessage)
+    &lt;button onClick=(reduce (fun _event =&gt; Restart))&gt;Restart Me&lt;/button&gt;
+  &lt;/span&gt;
+)
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>reduce method callback pass action to reducer</li>
+        <li>bind to buttons</li>
+        <li>encapsulates state of a sub-tree in a component, not global or leaf</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      We use the reduce method provided by reason-react to the render function to call the provided callback and pass the result to the reducer along with the current state. The callback passed to reduce returns the action to call, along with any data to use in the state update. Finally we create some buttons inside our component render that bind event handlers to their onclick events.
+
+      <br /><br />Because this is bound to a component, we can easily encapsulate the state of a sub-tree of our ui without it being part of some massive global store or requiring every leaf to implement a store accessor.
+    </aside>
+  </section>
+
+  <section>
+    <h2><span style="text-decoration: line-through;">react</span> elm developers?</h2>
+
+    <aside class="notes">
+      <ul>
+        <li>for any elm afficionados</li>
+        <li>thanks to tea, quality ^</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      For any Elm afficionados out there, if all of this is starting to look familiar to you, it definitely should. Thanks to the elm architecture, the quality of frontend data manipulation and event handling has increased manyfold, and Reason's state management has it's learnings in the same FRP that underlies Elm.
+    </aside>
+  </section>
+
+  <section>
+    <h2>interop?!?1</h2>
+
+    <aside class="notes">
+      <ul>
+        <li>interop?</li>
+        <li>rewrite all in reason</li>
+        <li>invested in smooth transition js -> blended -> reason</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      What about interop with the JS ecosystem? Once we're writing ReasonReact components are we required to re-write everything in Reason? Definitely not! Reason is very invested in providing a smooth transition from a JavaScript application, to a blended application and possibly through to an entirely Reason application.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module Wrapper = {
+  external myJSReactClass : ReasonReact.reactClass = "myJSReactClass" [@@bs.module];
+
+  let make name::(name: string) age::(age: int) children =>
+    ReasonReact.wrapJsForReason
+      reactClass::myJSReactClass
+      props::{"name": name, "age": age}
+      children;
+};
+
+&lt;Wrapper name="Jacob" age=27 /&gt;
+    </code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>use js from reason, wrap to make consumable</li>
+        <li>use the bs.module ffi to import</li>
+        <li>define wrapper make using wrapJSForReason</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      In order to use a JavaScript component from inside Reason, we have to wrap it to make it consumable. We "import" the JavaScript React component using a Bucklescript external declaration, binding it to the value myJsReactClass. We then define a ReasonReact wrapper around the JavaScript component and export that. This then allows us to use the JavaScript component as if it were a ReasonReact component.
+    </aside>
+  </section>
+
+  <section>
+    <div>
+      <pre><code>
+/* in myReasonComponent.re */
+let component = ...;
+let make ...;
+
+let default =
+  ReasonReact.wrapReasonForJs
+    ::component
+    (fun jsProps => make name::jsProps##name age::?(Js.Nullable.to_opt jsProps##age) [||]);
+      </code></pre>
+      <pre><code>
+/* in some js file */
+var MyReasonComponent = require('/path/to/myReasonComponent.js');
+// make sure you're passing the correct data types!
+&lt;MyReasonComponent name="John" /&gt;
+      </code></pre>
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>use reason in js, export as default using wrapReasonForJs</li>
+        <li>use let default = so bs transpile to export default / module.exports = </li>
+        <li>import and use as normal</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      For the opposite effect we instead wrap our created component with a different helper method that allows it to be required directly from JavaScript and used in place of an ordinary React component.
+    </aside>
+  </section>
+
+  <section>
+    <div style="text-align: left; width: 100%">
+      <h3>messenger.com</h3>
+      <h2>50% converted to reason</h2>
+    </div>
+    <aside class="content">
+      Speaking of interoperability, Facebook's messenger.com site is sitting at around 50% of the site converted.
+    </aside>
+  </section>
+
+  <section>
+    <div style="text-align: left; width: 100%">
+      <h3>messenger.com</h3>
+      <h2>complete build: ~2s</h2>
+    </div>
+    <aside class="content">
+      A full rebuild of the Reason side takes around 2s, which is incredibly fast for such a large codebase.
+    </aside>
+  </section>
+
+  <section>
+    <div style="text-align: left; width: 100%">
+      <h3>messenger.com</h3>
+      <h2>incremental rebuild: ~100ms</h2>
+    </div>
+    <aside class="content">
+      An incremental rebuild of the Reason side takes only around 100ms, thanks to the incredible work on the Bucklescript compiler.
+    </aside>
+  </section>
+
+  <section>
+    <div style="text-align: left; width: 100%">
+      <h3>messenger.com</h3>
+      <h2>bugs introduced: 10</h2>
+    </div>
+    <aside class="content">
+      On theme though, the total number of bugs introduced over the course of a year in their Reason codebase was 10.
+
+      <br /><br />10, total. In a year!
+
+      <br /><br />For a project the size of messenger this is a great statistic. Most importantly, developer confidence in their shipped product improved drastically, with refactors that took days taking hours. And with virtually no introduced bugs.
+    </aside>
+  </section>
+
+  <section>
+    <h2>from glass to tempered steel</h2>
+
+    <aside class="notes">
+      <ul>
+        <li>rr api preserves chars of react eco</li>
+        <li>augments with with compile time typehceck</li>
+        <li>using composing sharing and refactoring</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      The ReasonReact api preserves the characteristics of the React ecosystem that make it so enjoyable to use, while augmenting it with proper compile-time types which makes using, composing, sharing and refactoring these components a breeze.
+    </aside>
+  </section>
+</section>
+
+<aside class="content">
+  <hr />
+</aside>
+
+<section>
+  <section>
+    <h1>validations are verlep</h1>
+
+    <aside class="notes">
+      <ul>
+        <li>~20 mins 7 mins</li>
+        <li>blame mel for verlep</li>
+        <li>tackling DDD validation layers</li>
+        <li>no compile time way to assert validation</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      I actually have my wife to blame for this slide. She taught me the word "verlep" a few years ago, and it's such a fun word to say. It means limp or wilted, which is exactly how I feel about validation functions/frameworks in JavaScript.
+
+      <br /><br />One of the problems I'm tackling at work at the moment is the data validation between the controller layer and the services layer in a web application. Once a request has been routed to a handler, and been authenticated and authorized, it's useful to have a dedicated layer responsible for validating that the data is correct and obeys the business rules required.
+
+      <br /><br />However, by the nature of the language these validations often couple type validation with data validation, as well as providing no real safety to ensure that the process of validation has taken place.
+    </aside>
+  </section>
+
+  <section>
+    <pre></code>
+type name = string;
+type age = int;
+type person = Person name age;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>data struct passing around</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      This is the data-structure we'll be passing around. We define a person as a struct containing a name and an age.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+const valid = validate(person);
+if (!valid) {
+  throw new Error('invalid fields');
+}
+
+save(person);
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>untyped lan validating easy</li>
+        <li>funcs if pass return if fail throw</li>
+        <li>tightly couples to ORM, public/private duality</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      In an untyped language, validating is pretty straightforward. We apply some functions to the data and return true if valid, or some errors if not. We can then pass the person to be saved. Most languages will hold a boolean on the model called valid or validated, and have some model code that calls a bunch of validators, setting this to true if they all pass.
+
+      <br /><br /> This tightly couples the validation and save processes though, making it harder to safely separate the two processes. Either the boolean must be private, in which case the only way to set it and make the model safe to save is through the model validators, or it must be public, in which case anything can set it.
+    </aside>
+  </section>
+
+  <section>
+    <div>
+      <h2>phantom types</h2>
+      <img src="/public/assets/casper.jpg" />
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>haunted!?</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      By the way, did you know that ReasonML is actually haunted?
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+type t 'a = string
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>phantom types</li>
+        <li>type dec lhs vs rhs</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      I'm speaking of course of phantom types. A phantom type, like in the code snippet, is a type declaration where some or all of the types on the left hand side do not appear in constructors on the right hand side.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+type t 'a = string;
+let (x: t int) = "foo";
+let (y: t float) = "bar";
+
+Js.log (x ^ y); /* prints foobar */
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>t is poly, no 'a not on rhs</li>
+        <li>assignment type not return type is string, so concat works</li>
+        <li>wacky, esoteric. couple with opaque types to proove validate before save</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      In this case, the type t is polymorphic, but it's polymorphism has no effect on the type constructued, which is always string. We can see the assignment of two variables here, one constrainted to t int, one to t float. However, the int and the float have no bearing on the types actually bound to the variables, both string. Thus the ^ operator which acts as a concatenaction operation on two string will join them together, will print foobar.
+
+      <br /><br />This seems like a really wacky, esoteric technique, but it's actually a very powerful way to assert behaviour about your system at compile time that can help protect your system. To get that benefit, we couple it with a feature we saw earlier, opaque types. Let's discuss a validation approach that can guarantee us that save is never called with invalid, or not yet validated data.
+
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+/* must not compile /*
+PersonValidator.make name age
+  |> Person.save;
+
+/* should compile */
+PersonValidator.make name age
+  |> Person.validate
+  |> Person.save;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>|> is pipe</li>
+        <li>save without validate compile fail</li>
+        <li>save afte validate, correct</li>
+        <li>fail at compile time!</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Introducing one of the more popular operators in Reason, the pipe (|>) operator. |> will take the result of the previous expression and insert it in the tail position of the next expression, allowing you to pipe data from function to function, similar to pipe in a shell.
+
+      <br /><br />This is the API we'd like to be able to rely on. If we try save a person without first calling validate on them, it should fail. But most importantly, it should fail at compile time. It must be impossible to write a function where we even try to save an unvalidated object.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module type PersonValidator = {
+  type valid;
+  type invalid;
+  type t 'a;
+
+  let make: string => int => t invalid;
+  let validate: t invalid => option (t valid);
+};
+
+module PersonValidator: PersonValidator = {
+  type valid;
+  type invalid;
+  type t 'a = Person string int;
+
+  let make name age => Person name age;
+  let validate (Person name age) => {
+    (String.length name < 0 || age < 0) ? None : Some (Person name age);
+  };
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>our full example</li>
+        <li>break it down</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Boy is there a lot going on here. Lets break it down.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module type PersonValidator = {
+  type valid;
+  type invalid;
+  type t 'a;
+
+  /* the rest of the lines grey'd out */
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>declare with 2 opaque, v and iv</li>
+        <li>will need to use exposed function since t is opaque</li>
+        <li>valuable as no one can create a valid person</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      First we declare a module where we define three opaque types, valid, invalid and t 'a. I'll remind that opaque types are not able to be directly constructed outside of the module they are defined in. This means that to build a Person.t we'll need to use one of the exposed functions from inside the module.
+
+      <br /><br />This is very valuable, because it means that no one can create a value that is tagged as valid or invalid without using our exposed function, making it safe to write functions that depend on valid tagged types.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module type PersonValidator = {
+  let make: string => int => t invalid;
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>expose cons make only way</li>
+        <li>dont expose Person since t is abstract</li>
+        <li>make bound to return t invalid</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      We expose a single constructor method, make. This method is the only exposed way to create a Person.t type, since we don't expose the Person constructor. To prevent a function being comfortable using this type directly, we apply the invalid type as a phantom type to tag this created value as invalid.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module type PersonValidator = {
+  let validate: t invalid => option (t valid);
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>only method invalid to valid</li>
+        <li>either None or Some valid</li>
+        <li>option for ease, likely use result/either</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Next we see the only method that will convert an invalid type to a valid type. The validate function. This function will map an invalid person to either a successful validation, or an unsuccessful validation. For simplicity, we're using the option type here, but we could just as easily use the result type to capture the reasons for why the validation failed.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module type PersonValidator = {
+  let save: t valid => t valid;
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>save method only only t valid</li>
+        <li>only way get valid validate</li>
+        <li>compile time certainty that save is only called on valid</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Finally, we have our action method. Here we apply the save method to the validated data, persisting it in our database. We can see that this method can only be applied to valid structures.
+
+      <br /><br />Since the only way to create a valid structure is through the validate method, we can be sure that any data passed to this method has been through our validate call. We can assert at compile time that we don't try to save any invalid data.
+
+      <br /><br />But what does this look like in practice?
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+PersonValidator.make "Jacob Bass" 27
+  |> PersonValidator.validate
+  |> Option.fmap PersonValidator.save;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>happy path create tagged invalid</li>
+        <li>pipe through validate rx valid</li>
+        <li>pipe through save</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Let's start with the happy path. We first create a new person, yours truly. We pass that person object through the validator, and then we use fmap to only apply save if the validate function returns a valid person in a Some type. What about the unhappy path, where the validation fails?
+
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+PersonValidator.make "Too Young" (-1)
+  |> PersonValidator.validate
+  |> Option.fmap PersonValidator.save;
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>create person invalid</li>
+        <li>validate fails returns Non</li>
+        <li>fmap won't call for none so we're safe</li>
+        <li>nefarious?</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      In this case, we create the person object and pass them into validate. This time validate fails, so our fmap function will not apply save. So we're safe, we can see that we don't somehow fail validate and pass the data into save. How about the nefarious case? this is where the phantoms really come in handy.
+    </aside>
+  </section>
+  <section>
+
+    <pre><code>
+let notValid = PersonValidator.make "Sneaky Jacob Bass" 27;
+PersonValidator.save notValid;
+
+/* Error: type t invalid is not compatible with t valid for save */
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>create invalid</li>
+        <li>try pass directly to save</li>
+        <li>phantom types protect at compile time</li>
+        <li>evil?!</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      So what should happen here? we create a not-yet-validated person object, and try save it. When created, the person object has the type PersonValidator.t invalid, and so the phantom valid/invalid types protect us. What if someone tries something really evil?
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+let (notValid: PersonValidator.t PersonValidator.valid) =
+  PersonValidator.make "Really Sneaky Jacob Bass" 27;
+PersonValidator.save notValid;
+
+/* Error: type t valid is not compatible with type t invalid returned by make */
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>sneaky - try cast result from t invalid to t valid</li>
+        <li>compile fail</li>
+        <li>compile time assertion</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      In this case we try something really sneaky, and attempt to cast the result of make to be valid rather than invalid. Even here the phantom types protect us, and throw a type error at compile time asserting that the type t valid is not compatible with the type t invalid returned by make.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module PersonValidator: PersonValidator = {
+  type valid;
+  type invalid;
+  type t 'a = Person string int;
+
+  let make name age => Person name age;
+  let validate (Person name age) => {
+    (String.length name < 0 && age < 0) ? None : Some (Person name age);
+  };
+};
+
+</code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>coolest impl. t not ref val/inv</li>
+        <li>use ordinary func with ordinary cons to make person. no ref phatom</li>
+        <li>impl doesn't mention cast, relying on interface</li>
+        <li>signal ghosts dont exist at runtime</li>
+        <li>no wrap/unwrap penalty for using them</li>
+        <li>win-win-win</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      The coolest thing about this trick becomes clear when we look at the implementation of the validator. The type t that we use to constrict our person to invalid/valid states doesn't actually reference these states directly.
+
+      <br /><br />We use an ordinary constructor to build a person, with no direct reference to the phantom type. The make and validate functions are interesting here as well. We don't explicitly cast our invalid type to a valid one in any obvious way. Make constructs a person using the constructor, and validate takes that person and returns a new one if the validate passes.
+
+      <br /><br />This should signal something about our friendly ghosts - they don't exist at runtime. This means there's no wrap-unwrap penalty for using them. We get compile time certainty that we've called validate first, and pay no extra penalty for being safe.
+
+      <br /><br />Can you say win-win-win?
+    </aside>
+  </section>
+
+  <section>
+    <h2>from butterfly nets to bronze doors</h2>
+
+    <aside class="notes">
+      <ul>
+        <li>question value of validation if not guarantee</li>
+        <li>push condition into type system, compile time assurance</li>
+        <li>distinction between validation happened and validation was correct</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      I question the value of validation if you can't be sure that your models are actually being validated. By pushing this condition into the type system we can be assured that our system does the bare minimum work to ensure that validate is called before any critical operations are performed on the model data.
+    </aside>
+  </section>
+</section>
+
+<aside class="content">
+  <hr />
+</aside>
+
+<section>
+  <section>
+    <h1>abstractions are awesome!</h1>
+
+    <aside class="notes">
+      <ul>
+        <li>~27 mins 7 mins</li>
+        <li>one of features judge lang abstraction</li>
+        <li>reason not found lacking, more interesting abstractions</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      One of the features I judge a languages usefulness by is its ability to safely abstract over common concepts. From the lowest abstraction unit (a function) to the highest (whatever that may be), and Reason is not found lacking. I thought we'd end on some of the more interesting abstraction concepts.
+    </aside>
+  </section>
+
+  <section>
+    <h2>modules</h2>
+
+    <aside class="notes">
+      <ul>
+        <li>premier code org reuse</li>
+        <li>scope types and value namespaces</li>
+        <li>widely used, each file is a module</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Reason's premier code organisation and reuse abstraction has to be the module. Modules provide scope to both types and values, namespacing access to these things as well as providing ways to define interfaces and public/private access.
+
+      <br /><br />Modules are the most widely used Reason feature, for kind of a cheating reason. By definition, every single file in Reason is automatically wrapped up in a module that is named by the file name. That means that all values and types are scoped to the file they are defined in, and must be manually imported / aliased in other files in order to be used.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+/* definitions */
+module type       AddInterface = { type t;         let add: t => t => t;  };
+
+module IntImpl:   AddInterface = { type t = int;   let add x y => x + y;  };
+
+module FloatImpl: AddInterface = { type t = float; let add x y => x +. y; };
+
+/* interpolation */
+module MixesIntImpl = { include IntImpl; };
+
+module UsesFloatImpl = { open FloatImpl; let addition x y => add x y; };
+    </code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>defines a module type interface impl</li>
+        <li>inner impl supplies t</li>
+        <li>like ruby, openable and includeable. libs, mixins and imports</li>
+        <li>globally available namespaces to module(file) name</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      The first definition in this snippet defines a module type. This type will define the interface for any module that implements it. In this case we require that anything that implements AddInterface must at least have some type t, which is kept abstract, and a function add that takes two ts and returns a t.
+
+      <br /><br />We then come to our two implementations, IntImpl and FloatImpl. We can see that the inner implementation of the interface can supply a t that is concrete or abstract. In these cases it is concrete, but if it was a type that contained constructors then we wouldn't be able to access them outside of the module since t is abstract, allowing for privacy.
+
+      <br /><br />Much like Ruby modules, Reason modules are both usable directly, open-able and include-able, allowing for their usage as libraries, mixins and imports effectively. When included, all of the values and types on the interface will be written to the module it is being included in, and therefor available to consumers of that module. When opened, all of the types and values will be available inside the scope of the module, but not outside of it.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module type Monoid = { type t;       let mempty : t; let mappend : t => t => t; };
+
+module IntAdd      = { type t = int; let mempty = 0; let mappend x y => x + y;  };
+
+module IntMult     = { type t = int; let mempty = 1; let mappend x y => x * y; let foo = "bar";  };
+
+let mappendList
+  (type a)
+  ((module M): (module Monoid with type t = a))
+  (l: list a) =>
+    List.fold_right M.mappend l M.mempty;
+
+mappendList (module IntAdd) [1, 2, 3, 4]; /* returns 10 */
+mappendList (module IntMult) [1, 2, 3, 4]; /* returns 24 */
+    </code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>first class citizens values func args. to vis define</li>
+        <li>incomplete monoid interface mempty and mappend</li>
+        <li>define impl for add and mult</li>
+        <li>mappendlist generic in a take module some list of a</li>
+        <li>need generic a to match list to module without exposing impl</li>
+        <li>can apply different compatible modules. superset at least</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      One of the amazing things about Reason's modules is that they are first class citizens of the language. This means that they can be used as values, passed to functions, the whole shebang. To visualise this, we're going to define a function, mappendList, that takes an arbitrary Monoid and list of values, and combines them using the Monoid's mappend method.
+
+      <br /><br /> We define an incomplete Monoid interface as having an abstract type, t for the type the Monoid is implemented for. It has a value, mempty, that indicates the base value for combination and a method mappend that combines values of this type t.
+
+      <br /><br />Then, defining implementations for IntAdd and IntMult gives us some Monoid modules we can use. We then define mappendList to be generic for some type a, to take a module that implements Monoid, and constrain it to reference it's internal type t as being of type a, and some list l that contains values of type a.
+
+      <br /><br />We need to use this generic type to allow us to sidestep the fact that t is abstract inside Monoid and so cannot be easily referenced when converting Monoid to a first class module. This was we can set an equality between Monoid.t and list of a without leaking implementation details.
+
+      <br /><br />Now that we've defined our function, we can apply different modules that implement Monoid to mappendList and get back different results, all without changing the behaviour of the function. This is the power of combining generics with first class modules. We should also notice that IntMult is a superset of Monoid, and that Reason's type system allows us to supply modules that "at least" implement the required interface.
+    </aside>
+  </section>
+
+  <section>
+    <div>
+      <h2>Module Functors</h2>
+      <h4 style="text-decoration: line-through; text-transform: lowercase">fmap :: (Functor F) => (a -> b) -> f a -> f b</h4>
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>unlike canonical functor</li>
+        <li>define generic module</li>
+        <li>generate code from subset of features</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Unlike the canonical functor of fmap and category theory fame, in Reason a functor is a method of abstracting over a module. It allows us to define generic module behaviour parametrised over the definition of a module.
+
+      <br /><br />Effectively, we can define the generic implementation of a module, and then make it concrete by applying an input module.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module Functor = {
+  module type Input = { type t; };
+
+  module type Output = { include Input; };
+
+  module Make (Input : Input) : (Output with type t = Input.t) => {
+    include Input;
+  };
+};
+
+    </code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>a functor maps from input interface output interface</li>
+        <li>define a module function takes input and generates something of output</li>
+        <li>useful for generating code from a subset interface</li>
+        <li>similar to typeclasses, templates etc.</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      We define an Input module type and an Output module type. Then we define a Functor named Make that takes modules of type Input and returns modules of type Output. These names are completely arbitrary, as is the type assignment in the definition of Make.
+
+      <br /><br />Module Functors are a useful pattern when we want to generate code from a base definition. By using the input definition, we can write a type for Output that is constructed from all of the information present in Input. That is, we can write an implementation that is a superset of Input, and then generate that code by applying a module of type Input to Make. This is a similar idea to Haskell Type-Classes, c++ templates and a number of other generic structures.
+    </aside>
+  </section>
+
+  <section>
+    <h2>typeclassopaedia</h2>
+
+    <aside class="notes">
+      <ul>
+        <li>so like all good fp devs</li>
+        <li>some typeclasses can't quite be expressed</li>
+        <li>get very far</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      So like anyone who has dabbled with Haskell, as soon as I learned about the abstractions available, I set off to build an implementation of the Haskell typeclassopadia. There are some Typeclasses you can't quite express, but you can get very far with the abstractions available.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module Mappable = {
+  module type Input = {
+    type t 'a;
+    let fmap: ('a => 'b) => t 'a => t 'b;
+  };
+
+  module type Output = {
+    include Input;
+    let (<$>): ('a => 'b) => t 'a => t 'b;
+  };
+
+  module Make (I: Input) :(Output with type t 'a = S.t 'a) => {
+    include I;
+    let (<$>) = S.fmap;
+  };
+};
+    </code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>avoid overloading mappable not functor</li>
+        <li>need to define input, generate output with all additional values</li>
+        <li>we generate infix using fmap</li>
+        <li>don't write functions 100s of times, generate them</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      So in order to define the Mappable instance for a type, we need to define a module that obeys the Mappable.Input module type. By supplying a module that implements that interface to the Make Functor, we are returned a module that implements the Mappable.Output module with all the additional methods defined there.
+
+      <br /><br />In this case, we generate the (<$>) function using the fmap function from the input. We could also define a host of other functions that only need access to the type t and the function fmap to be implemented. By doing that, we separate out the definition of the Output code from the Input, allowing us to generate the required functions as needed.
+    </aside>
+  </section>
+
+  <section>
+    <pre><code>
+module Option = {
+  include
+    Mappable.Make {
+      type t 'a = option 'a;
+      let fmap f opt =>
+        switch opt {
+        | None => None
+        | Some x => Some (f x)
+        };
+    };
+};
+
+Option.((fun a => a + 1) <$> Some 1);
+
+    </code></pre>
+
+    <aside class="notes">
+      <ul>
+        <li>to use, define impl obeying input</li>
+        <li>for option, reuse builtin option. define fmap as needed</li>
+        <li>now can use infix as generated by functor</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      For Option, we define t as reusing the base option class from Reason. To define our function fmap we pattern match over the option value, and supply the required implementation. Once we applied this module to the Make Functor, we are returned a module that contains an implementation of the Functor.Output, allowing us to use (<$>) to apply a function f to an option value;
+    </aside>
+  </section>
+
+  <section>
+    <div style="width: 100%">
+      <h2>!adhoc</h2>
+      <pre><code>
+module Demo(F: Functor.Functor) => {
+  let eg1 x => F.fmap (fun a => a + 1) x;
+  let eg2 f x => F.fmap f x;
+};
+
+module ListDemo = Demo(List);
+module OptionDemo = Demo(Option);
+      </code></pre>
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>drawback no ad-hoc hkt</li>
+        <li>there are abstractions is it harder or impossible to write</li>
+        <li>modular implicits being worked on!</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      The drawback of the abstraction model in Reason is that it doesn't support ad-hoc polymorphism, nor higher kinded types. That does mean that there are a number of abstractions that languages like Haskell can implement that don't have direct implementations in Reason. There is an excellent spec being worked on to add a feature named <a href="http://www.lpw25.net/ml2014.pdf">modular implicits</a>, which will add many of the same advantages as type-classes and ad-hoc polymorphism to the language.
+    </aside>
+  </section>
+</section>
+
+<aside class="content">
+  <hr />
+</aside>
+
+<section>
+  <section>
+    <h1>a reasonable approach</h1>
+  </section>
+
+  <section>
+    <div>
+      <h2>a type is worth a thousand tests</h2>
+      "Manuel Chakravarty"
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>~34 mins 2 mins</li>
+        <li>single if branch 2. nested 4, 8 so on.</li>
+        <li>how many tests do you write that assert input output types</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      For a single logical branch, you test twice, true and false. Nest once, you test four times, nest again, 8, and so on. All just to assert the winding behaviour through a function. How many tests do you write that assert the inputs and outputs of your function are correct.
+    </aside>
+  </section>
+
+  <section>
+    <div>tests tell you what you remembered<br />types tell you what you forgot</div>
+
+    <aside class="notes">
+      <ul>
+        <li>only what we remember</li>
+        <li>mercy of memories tooling or time</li>
+        <li>wayside when refactoring</li>
+        <li>types cover many things we use tests for, faster and more automatic</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      But the hardest part is that we can only test what we remember to test. So we find ourselves at the mercy of our memories, or our tooling, or our available time. Tests fall by the wayside when refactoring, when re-writing, when re-iterating.
+
+      <br /><br />Types give you many of the safeties of the common unit test assertions, with no runtime cost. Modern compilers (like bucklescript) are orders of magnitude faster than most test frameworks, and provide a more automatic kind of safety.
+    </aside>
+  </section>
+
+  <section>
+    <img width="55%" src="/public/assets/reason-venn-diagram.png" />
+
+    <aside class="notes">
+      <ul>
+        <li>reason born of excitment</li>
+        <li>excitment introduce fp to webdev</li>
+        <li>excitement to teach new devs</li>
+        <li>excitement to help provide safe-by-default blocks</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Reason is a language syntax born of excitement. Excitement to introduce fp and types to the  common web development stacks. Excitement to teach a new generation of programmers who would never have come into contact with these concepts. Excitement to help provide the industry with safe-by-default building blocks.
+
+      <br /><br />Reason is designed to make the transition as smooth as possible for you and for your team, so that the barrier for adoption is as low as possible.
+    </aside>
+  </section>
+
+  <section>
+    <div>
+      <h2>tooling and framework fatigue</h2>
+      <img src="/public/assets/projectlogos.png" />
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>years of tooling fatigue</li>
+        <li>number of tools exploded churn not slowing down</li>
+        <li>reason ships rock solid</li>
+        <li>improving devX not cognitive load</li>
+        <li>push complexity below the language layer</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      The last couple of years on the web have been years of tooling fatigue. Over the last three years, the number of tools needed to ship a well-architected application has exploded, and the rate of churn hasn't slowed down.
+
+      <br /><br />At its core, Reason ships a rock-solid, stable development stack, focused on improving developer experience without increasing cognitive load. By focusing on one or two tools, we can push complexity into this stable layer.
+    </aside>
+  </section>
+  <section>
+    <div>
+      <h2>taming the meta-language</h2>
+      <img width="75%" src="/public/assets/metalang.png" />
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>in webdev, frameworks are all the rage</li>
+        <li>weight and depth of information, tooling, books, conferences, tutorials just to ship</li>
+        <li>if you think monad tutorials are bad, how many different ways to run redux</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      In web development at the moment, frameworks are all the rage. We hear about how libraries are the new compilers. We see first hand the weight and depth of tooling needed to bring an application to production.
+    </aside>
+  </section>
+
+  <section>
+    <img src="/public/assets/happy_finder_face.png" />
+
+    <aside class="notes">
+      What if instead, we pushed all of that complexity into the language stack, cut the churn and gave ourselves more room to focus on what really matters?
+    </aside>
+
+    <aside class="content">
+      What if instead, we pushed all of that complexity into the language stack, cut the churn and gave ourselves more room to focus on what really matters?
+    </aside>
+  </section>
+
+  <section>
+    <div>
+      <img width="70%" src="/public/assets/reasonml.png" />
+      <div><a href="http://discord.gg/reasonml">http://discord.gg/reasonml</a></div>
+      <div><a href="https://reasonml.github.io/guide/javascript/quickstart">https://reasonml.github.io/guide/javascript/quickstart</a></div>
+    </div>
+
+    <aside class="notes">
+      <ul>
+        <li>please come and speak to me afterwards if you have any questions</li>
+        <li>if you're interested in getting started join the discord</li>
+        <li>check out the docs and getting started guide on the website</li>
+      </ul>
+    </aside>
+  </section>
+</section>

@@ -2,6 +2,10 @@
 title: A Selection of Talks I've Given
 ---
 
+## Unreasonable Expectations
+<span class="post-date">@ The Strangeloop, St. Louis 2017-09-29</span>
+Slides Pending | Video Pending
+
 ## Everything Happens for a Reason
 <span class="post-date">@ Node.Ninjas Sydney 2017-06-01</span>
 [Slides](/presentations/2017-06-01-nodeninjas-sydney)

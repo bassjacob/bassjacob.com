@@ -6,8 +6,10 @@ external send : Express.Response.t => 'a => Express.done_ = "" [@@bs.send];
 
 external set : Express.Response.t => string => string => unit = "" [@@bs.send];
 
-external listen : App.t => int => (Js.Null_undefined.t Js.Exn.t => unit) [@bs.uncurry] => unit =
-  "" [@@bs.send];
+external listen_ : App.t => int => (Js.Null_undefined.t Js.Exn.t => unit) [@bs.uncurry] => unit =
+  "listen" [@@bs.send];
+
+let listen app ::port=3000 ::onListen=(fun _ => ()) () => listen_ app port onListen;
 
 type errorMiddlewareFn = Middleware.errorF;
 
@@ -23,6 +25,12 @@ type method =
   | POST
   | PUT
   | DELETE;
+
+type route_ _ =
+  | Route_ (method, string, middlewareFn): route_ (method, string, middlewareFn)
+  | AsyncRoute_ (method, string, asyncMiddlewareFn): route_ (method, string, asyncMiddlewareFn)
+  | ErrorRoute_ (errorMiddlewareFn): route_ errorMiddlewareFn
+  ;
 
 type route =
   | ErrorRoute (errorMiddlewareFn)
@@ -62,7 +70,7 @@ let applyRoute server route =>
 let makeServer routes port onListen => {
   let app = express ();
   List.iter (applyRoute app) routes;
-  listen app port onListen;
+  listen app ::port ::onListen ();
 };
 
 let safeGetEnv default envvar =>

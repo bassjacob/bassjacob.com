@@ -34,6 +34,67 @@ let render (locals: locals) () => {
     <link rel="shortcut icon" href="/public/favicon.ico">
 
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+    <style>
+      div.post hr {
+        border-top: 2px solid #aaa;
+      }
+
+      div.post > section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+      }
+
+      div.post > section > section > div > img {
+        width: 100%;
+      }
+
+      div.post section > * {
+        width: 100%;
+      }
+
+      div.post pre {
+        overflow: scroll;
+        white-space: pre;
+      }
+
+      div.post > section > section > * {
+        border: solid 1px black;
+        padding: 5px;
+        text-align: center;
+      }
+
+      div.post > section > section > div > pre {
+        border: solid 1px black;
+        padding: 5px;
+        text-align: initial;
+      }
+
+      div.post > section > section > pre {
+        text-align: left;
+        padding: 30px;
+      }
+
+      div.post > section > section > aside {
+        margin: 10px 0;
+        border: none;
+        padding: 0;
+        text-align: left;
+      }
+
+      aside.notes {
+        display: none;
+      }
+
+      div.post pre.inline-pre {
+        display: inline;
+        padding: 0 0.5rem;
+        margin: 0;
+        color: red;
+      }
+    </style>
   </head>
 
   <body>

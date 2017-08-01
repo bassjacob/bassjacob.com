@@ -1,57 +1,27 @@
 ---
-title: reacting reasonably
+title: everything happens for a reason
+draft: true
 ---
 <section>
   <section>
-    <h1>in the beginning...</h1>
-    <pre class="language-javascript">
-      <code>
-$('.app').html('hello world!');
-      </code>
-    </pre>
+    <img src="assets/reasonml.png" />
   </section>
   <section>
-    <h1>generations later...</h1>
-    <pre class="language-javascript">
-      <code>
-document.querySelector('.app').innerHTML = 'hello world!';
-      </code>
-    </pre>
+    <img width="120%" src="assets/reasoninmyv8.png" />
   </section>
-  <section>
-    <h1>but these days...</h1>
-    <pre>
-      <code>
-$ cat webpack.config.js | wc -l # number of lines in my webpack config
-      206
-
-$ cat package.json | wc -l # number of lines in my package.json
-      205
-
-$ tree -d | grep babel | wc -l # number of folders that match "babel"
-      424
-
-$ du -chd1 # size on disk of all of my dependencies
-      1.7G total
-      </code>
-    </pre>
-  </section>
-  <section><img src="assets/projectlogos.png" alt=""></section>
-  <section>
-    <h1>the year<i style="opacity: 0;">s</i> of javascript <i>fatigue</i></h1>
-  </section>
-  <section>
-    <h1>the year<i style="color: #cbaabc;">s</i> of javascript <i>fatigue</i></h1>
-  </section>
-  <section>
-    <img src="assets/metalang.png" alt="">
+  <section style="flex-direction: row">
+    <div style="width: 100%">
+      <h2>JavaScript</h2>
+      <pre class="language-javascript" data-src="examples/js.js"></pre>
+    </div>
+    <div style="width: 100%">
+      <h2>Reason</h2>
+      <pre class="language-reason" data-src="examples/js.re"></pre>
+    </div>
   </section>
 </section>
 
 <section>
-  <section>
-    <img src="assets/reasonml.png" alt="">
-  </section>
   <section>
     <h1>so what's the <i style="color: #cbaabc;">reason</i> for all of this, anyway?</h1>
   </section>
@@ -102,7 +72,6 @@ $ du -chd1 # size on disk of all of my dependencies
     </div>
   </section>
 </section>
-
 <section>
   <section>
     <h1>typescript</h1>
@@ -128,25 +97,67 @@ $ du -chd1 # size on disk of all of my dependencies
 
 <section>
   <section>
+    <h1>the year<i style="opacity: 0;">s</i> of javascript <i>fatigue</i></h1>
+  </section>
+  <section>
+    <h1>the year<i style="color: #cbaabc;">s</i> of javascript <i>fatigue</i></h1>
+  </section>
+  <section>
+    <img src="assets/metalang.png" />
+  </section>
+  <section>
+    <h1>safe by default</h1>
+    <h2>you need to take off the parachute, not put it on</h2>
+  </section>
+</section>
+
+<section>
+  <section>
     <h1>hello world!</h1>
   </section>
   <section>
-    <pre class="language-reason" data-src="examples/rr1.re"></pre>
+    <pre class="language-javascript" data-src="examples/express1.js"></pre>
   </section>
   <section>
-    <pre class="language-reason" data-src="examples/rr2.re"></pre>
+    <pre class="language-reason" data-src="examples/express1.re"></pre>
   </section>
   <section>
-    <pre class="language-reason" data-src="examples/rr3.re"></pre>
+    <h3>open Express;</h3> <p>is kind of like</p> <h3>const express = require('express');</h3>
   </section>
   <section>
-    <pre class="language-reason" data-src="examples/rr4.re"></pre>
+    <pre class="language-reason" data-src="examples/expressmodule.re"></pre>
   </section>
   <section>
-    <pre class="language-reason" data-src="examples/rr5.re"></pre>
+    <pre class="language-reason" data-src="examples/express2.re"></pre>
   </section>
   <section>
-    <pre class="language-reason" data-src="examples/rr6.re"></pre>
+    <h1>type route = A | B | C;</h1>
+    <h3>define the allowed members of the type</h3>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/adtexample.re"></pre>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/express3.re"></pre>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/express4.re"></pre>
+  </section>
+  <section>
+    <h1>FFI?</h1>
+    <h3>binding to existing JS code</h3>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/ffiexample.re"></pre>
+  </section>
+  <section>
+    <h1>Typed Templating</h1>
+  </section>
+  <section>
+    <pre class="language-reason" data-src="examples/mysimpletemplate.re"></pre>
+  </section>
+  <section>
+    <h2>Real World Example:</h2><h2>github.com/bassjacob/bassjacob.com</h2>
   </section>
 </section>
 
@@ -170,11 +181,10 @@ $ du -chd1 # size on disk of all of my dependencies
 
 <section>
   <section>
-    <h1>reason sydney meetup: 14th June</h1>
+    <h1>a new meetup</h1>
     <h2><a href="https://www.meetup.com/reason-sydney/">meetup.com/reason-sydney</a></h2>
   </section>
   <section>
-    <h1>follow us</h1>
-    <h1>@reasonsydney</h1>
+    <h3>https://discord.gg/reasonml</h3>
   </section>
 </section>

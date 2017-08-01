@@ -25,7 +25,7 @@ let return v => resolve v;
 module Helpers = {
   let (<$>) = fmap;
   let (>>=) = bind;
-  
+
   let (|<>) p f => p |> then_ (fun z => resolve @@ f z);
   let (|>>) p f => p |> then_ (fun z => all @@ f z);
   let (|<<) p f => p |> catch (fun z => resolve @@ f z);

@@ -20,7 +20,7 @@ module Index = {
   let controller req res next => {
     Express.Request.path req
       |> Js.String.replace "/" ""
-      |> (fun x => "./" ^ x ^ "presentation.md")
+      |> (fun x => "./" ^ x ^ "presentation.html")
       |> (fun file => Fs.readFileP file "utf-8")
       |> P.fmap Matter.parse
       |> P.fmap render

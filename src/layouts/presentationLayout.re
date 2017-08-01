@@ -5,7 +5,7 @@ type presentations = {
 };
 
 let whoamiSlide = {j|<section style="flex-direction: column;">
-  <h1>\${whoami:-Jacob Bass}</h1>
+  <h2>\${whoami:-Jacob Bass}</h2>
 
   <p>github: bassjacob</p>
   <p>twitter: @bassjacob</p>
@@ -16,7 +16,6 @@ let whoamiSlide = {j|<section style="flex-direction: column;">
 let render {title, subtitle, content} => {
   {j|<!doctype html>
 <html>
-<<<<<<< HEAD
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,58 +50,60 @@ let render {title, subtitle, content} => {
         color: #baffab !important;
       }
 
-			.reveal > pre:only-of-type {
-				width: 100% !important;
-			}
+      .reveal > pre:only-of-type {
+        width: 100% !important;
+      }
 
-			.reveal pre {
-				border: 2px solid #f0f5f2;
-			}
+      .reveal pre {
+        border: 2px solid #f0f5f2;
+      }
 
-			.reveal code {
-				max-height: 90vh !important;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="reveal">
-			<div style="position:absolute; z-index: 2; top: 95%; right: 1%;">
-				<a href="https://bassjacob.com">bassjacob.com</a>
-			</div>
-			<div style="position:absolute; z-index: 2; width: 100%; top: 95%; text-align: center;">
-				$(title)
-			</div>
-			<div style="position:absolute; z-index: 2; top: 95%; left: 1%;">
-				<a href="https://twitter.com/bassjacob">@bassjacob</a>
-			</div>
-			<div class="slides">
-				<section>
-					<h1>$(title)</h1>
-					<h2>$(subtitle)</h2>
-				</section>
-        $(whoamiSlide)
+      .reveal code {
+        max-height: 90vh !important;
+      }
+
+      aside.content {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>$(title)</h1>
+          <div style="position:absolute; z-index: 2; top: 100%; right: 1%;">
+            <a href="https://bassjacob.com">bassjacob.com</a>
+          </div>
+          <div style="position:absolute; z-index: 2; width: 100%; top: 100%; text-align: center;">
+            $(subtitle)
+          </div>
+          <div style="position:absolute; z-index: 2; top: 100%; left: 1%;">
+            <a href="https://twitter.com/bassjacob">@bassjacob</a>
+          </div>
+        </section>
         $(content)
         $(whoamiSlide)
-			</div>
-		</div>
+      </div>
+    </div>
 
-		<script src="/public/presentations/js/prism.min.js"></script>
-	  <script src="/public/presentations/js/prism-reason.js"></script>
-	  <script src="/public/presentations/js/prism-javascript.js"></script>
-	  <script src="/public/presentations/js/prism-jsx.js"></script>
-	  <script src="/public/presentations/js/prism-haskell.js"></script>
-	  <script src="/public/presentations/js/prism-ocaml.js"></script>
+    <script src="/public/presentations/js/prism.min.js"></script>
+    <script src="/public/presentations/js/prism-reason.js"></script>
+    <script src="/public/presentations/js/prism-javascript.js"></script>
+    <script src="/public/presentations/js/prism-jsx.js"></script>
+    <script src="/public/presentations/js/prism-haskell.js"></script>
+    <script src="/public/presentations/js/prism-ocaml.js"></script>
 
-		<script src="/public/presentations/js/head.min.js"></script>
+    <script src="/public/presentations/js/head.min.js"></script>
 
-		<script src="/public/presentations/js/reveal.js"></script>
+    <script src="/public/presentations/js/reveal.js"></script>
 
-		<script>
-			Reveal.initialize({
-				display: 'flex',
-				history: true,
-				width: "70%",
-				transition: 'none',
+    <script>
+      Reveal.initialize({
+        display: 'flex',
+        history: true,
+        width: "70%",
+        transition: 'none',
         controls: false,
         slideNumber: 'v/h',
         showSlideNumber: 'speaker',

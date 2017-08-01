@@ -13,9 +13,7 @@
       ]
     }
   ],
-  "reason" : { "react-jsx" : true},
   "bs-dependencies": [
-    "bs-express",
-    "reason-react"
+    "bs-express"
   ]
 }
