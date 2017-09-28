@@ -16,23 +16,28 @@ let whoamiSlide = {j|<section style="flex-direction: column;">
 let render {title, subtitle, content} => {
   {j|<!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<title>$(title)</title>
+    <title>$(title)</title>
 
-		<link rel="stylesheet" href="/public/presentations/css/reveal.css">
-		<link rel="stylesheet" href="/public/presentations/css/black.css">
-  	<link rel="stylesheet" href="/public/presentations/css/prism-okaidia.min.css">
+    <link rel="stylesheet" href="/public/presentations/css/reveal.css">
+    <link rel="stylesheet" href="/public/presentations/css/black.css">
+    <link rel="stylesheet" href="/public/presentations/css/prism-okaidia.min.css">
 
-		<style>
-			section,
-			section section {
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-			}
+    <style>
+      .slides {
+        width: 90% !important;
+      }
+
+      section,
+      section section {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
 
       .slides>section:nth-child(1)>h1 {
         color: #fabbaf;
@@ -99,9 +104,14 @@ let render {title, subtitle, content} => {
 				width: "70%",
 				transition: 'none',
         controls: false,
-			});
-		</script>
-	</body>
+        slideNumber: 'v/h',
+        showSlideNumber: 'speaker',
+        dependencies: [
+          { src: '/public/presentations/js/notes.js', async: true },
+        ]
+      });
+    </script>
+  </body>
 </html>
   |j}
 };
