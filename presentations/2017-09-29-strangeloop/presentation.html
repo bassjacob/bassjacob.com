@@ -8,7 +8,10 @@ summary: Using ReasonML to make the possible impossible. (Presented at Strangelo
 
 <section>
   <section>
-    <img src="/public/assets/sad_finder_face.png" />
+    <div>
+      <h2>writing correct software is hard</h2>
+      <img src="/public/assets/sad_finder_face.png" />
+    </div>
 
     <aside class="notes">
       <ul>
@@ -28,11 +31,8 @@ summary: Using ReasonML to make the possible impossible. (Presented at Strangelo
   <section>
     <div>
       <h2>the paradox of choice</h2>
-        <pre><code class="language-haskell">
-?? :: a -> a
-
-</code></pre>
-      </div>
+      <img style="width: 60vw" src="/public/presentations/2017-09-29-strangeloop/idnoimpl.png">
+    </div>
 
     <aside class="notes">
       <ul>
@@ -54,10 +54,7 @@ summary: Using ReasonML to make the possible impossible. (Presented at Strangelo
   <section>
     <div>
       <h2>the only implementation</h2>
-      <pre><code class="language-haskell">
-id :: a -> a
-
-</code></pre>
+      <img style="width: 50vw" src="/public/presentations/2017-09-29-strangeloop/idwithimpl.png">
     </div>
 
     <aside class="notes">
@@ -93,20 +90,7 @@ id :: a -> a
   </section>
 
   <section>
-    <pre><code class="language-javascript">
-function handleDates(type) {
-  const validTypes = ['createdAt', 'updatedAt'];
-
-  return function (date) {
-    if (!validTypes.includes(type) return [];
-    if (typeof date === 'string') return handleString(date, type);
-    if (_.isPlainObject(date)) return handleObject(date, type);
-
-    return [];
-  };
-}
-
-</code></pre>
+    <img style="height: 80vh" src="/public/presentations/2017-09-29-strangeloop/dynamicjs.png">
 
     <aside class="notes">
       <ul>
@@ -122,15 +106,7 @@ function handleDates(type) {
   </section>
 
   <section>
-    <pre><code class="language-reason">
-let handleDates (type: query) (date: elem 'a): (list 'b) => {
-  switch (date) {
-  | DateString str => handleString type date
-  | DateObject obj => handleObject type date
-  };
-};
-
-</code></pre>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/reasonjs.png">
 
     <aside class="notes">
       <ul>
@@ -157,11 +133,32 @@ let handleDates (type: query) (date: elem 'a): (list 'b) => {
         <li>reason based on OCaml</li>
         <li>developed by facebook, created by creator of react</li>
         <li>positioned as introductory fp</li>
+        <li>compiles to javascript</li>
       </ul>
     </aside>
 
     <aside class="content">
       Introducing Reason. Reason is a language based on the fantastic OCaml language, a statically-typed functional programming language in the ML-family. Reason is currently being developed by Facebook primarily, and is positioned as an introductory fp language with similar goals to Elm. I'll be introducing concepts as we go, so don't worry if you don't know any OCaml or Reason or anything.
+    </aside>
+  </section>
+
+  <section>
+    <img width="70%" src="/public/assets/reasoninmyv8.png" />
+
+    <aside class="notes">
+      <ul>
+        <li>reason compelling for web and genpurpose</li>
+        <li>interop through FFI, bindings to external JS call from in reason</li>
+        <li>applies generally</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      It's actually this feature that makes reason so compelling, especially for web and general purpose development. Through the usage of the bucklescript compiler, it provides a wonderful interoperability with the JavaScript ecosystem.
+
+      <br /><br />To interop with JavaScript, we make use of the Foreign Function Interface (or FFI) from the bucklescript compiler. This allows you to write typed bindings to external JavaScript functions, and call them from inside Reason as if they were Reason functions.
+
+      <br /><br />While the majority of the techniques discussed apply to reason, and to statically typed fp in general, I'll also discuss some features that are unique to the JavaScript interop process.
     </aside>
   </section>
 </section>
@@ -193,17 +190,7 @@ let handleDates (type: query) (date: elem 'a): (list 'b) => {
   </section>
 
   <section>
-    <pre><code class="language-javascript">
-function (req, res, next) {
-  if (req.body.sendOne) {
-    return res.send('1');
-  } else if (req.body.sendTwo) {
-    return res.send('2');
-  }
-};
-
-</code></pre>
-
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/jscontroller.png">
     <aside class="notes">
       <ul>
         <li>standard part of backend, dangerous pattern</li>
@@ -220,12 +207,14 @@ function (req, res, next) {
   </section>
 
   <section>
-    <pre><code>
-function(must, take, meaningful, arguments) {
-  return "results of inner computation";
-}
+    <div>
+      <h2>javascript return types</h2>
+      <img style="height: 60vh" src="/public/presentations/2017-09-29-strangeloop/takewhatyoucan.gif">
+    </div>
+  </section>
 
-</code></pre>
+  <section>
+    <img style="height: 30vh" src="/public/presentations/2017-09-29-strangeloop/functionmusttake.png">
 
     <aside class="notes">
       <ul>
@@ -247,16 +236,7 @@ function(must, take, meaningful, arguments) {
   </section>
 
   <section>
-    <pre><code class="language-reason">
-/* in express.re */
-type done_;
-
-module Request = { /* the req impl */ };
-module Response = { /* the res impl */ };
-module Next = { /* the next impl */ };
-module Middleware = { /* the middleware impl */ };
-
-</code></pre>
+    <img style="height: 60vh" src="/public/presentations/2017-09-29-strangeloop/expressre.png">
 
     <aside class="notes">
       <ul>
@@ -275,23 +255,7 @@ module Middleware = { /* the middleware impl */ };
   </section>
 
   <section>
-    <pre><code>
-module Request = {
-  type t;
-};
-
-module Response = {
-  type t;
-
-  external sendHTML: t => string => done_ = "send" [@@bs.send];
-  /* transpiles to t.send("the string passed") */
-};
-
-module Next = {
-  type t = (Js.Nullable.t 'a => done_);
-}
-
-</code></pre>
+    <img style="height: 80vh" src="/public/presentations/2017-09-29-strangeloop/expressre2.png">
 
     <aside class="notes">
       <ul>
@@ -316,18 +280,7 @@ module Next = {
     </aside>
   </section>
   <section>
-    <pre><code>
-module Middleware = {
-  type t = Request.t => Response.t => Next.t => done_;
-};
-
-module App = {
-  type t;
-  external make: unit => t = "" [@@bs.module "express"];
-  external get: t => string => Middleware.t => unit = "" [@@bs.send];
-};
-
-</code></pre>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/expressre3.png">
 
     <aside class="notes">
       <ul>
@@ -348,24 +301,14 @@ module App = {
   </section>
 
   <section>
-    <pre><code>
-let app = App.make ();
-let f req res next => {
-  switch (parseRequest req.body) {
-  | None => next (Js.Nullable.from_opt (Some "Incorrect Body"))
-  | (Some SendOne) => Response.sendHTML "<html>one</html>"
-  | (Some SendTwo) => Response.sendHTML "<html>two</html>"
-  };
-};
-App.get app "/numbers" f;
-
-</code></pre>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/expressre4.png">
 
     <aside class="notes">
       <ul>
         <li>switch, pattern match compile time like if between variant and code branch to execute</li>
         <li>ergonomic different functions on inner type, ADT's</li>
         <li>theory parseRequest, returns optional. None => error, Some => send</li>
+        <li>by using explicit nullable, option type, billion dollar mistake</li>
         <li>everything is inferrable!</li>
       </ul>
     </aside>
@@ -384,30 +327,12 @@ App.get app "/numbers" f;
   </section>
 
   <section>
-    <pre><code>
-let app = App.make ();
-let f req res next => {
-  switch (parseRequest req.body) {
-  | (Some SendOne) => Response.sendHTML "<html>one</html>"
-  }; /* Warning incomplete pattern match.
-
-  /*
-    Warning 8: this pattern-matching is not exhaustive.
-    Here is an example of a value that is not matched:
-    None
-    Some SendTwo
-  */
-};
-App.get app "/numbers" f;
-
-</code></pre>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/expressre5.png">
 
     <aside class="notes">
       <ul>
         <li>when we make a mistake, compiler alerts</li>
-        <li>by using explicit nullable, option type, billion dollar mistake</li>
         <li>pushing errors into type system, compiler checks that we handle them.</li>
-        <li>foo is not a method on undefine.</li>
         <li>compiler will tell us what we've forgotten and where</li>
       </ul>
     </aside>
@@ -424,7 +349,7 @@ App.get app "/numbers" f;
 
   <section>
     <h2>
-      solid foundations built atop the compiler
+      solid foundations <br />built on the compiler
     </h2>
 
     <aside class="notes">
@@ -485,20 +410,7 @@ App.get app "/numbers" f;
   </section>
 
   <section>
-    <pre><code>
-class Greeting extends React.Component {
-  static propTypes = {
-    message: PropTypes.string,
-  }
-
-  render() {
-    return <span>{this.props.message}</span>
-  }
-}
-
-&lt;Greeting message="Hello Strangeloop!" /&gt;
-
-</code></pre>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/react1.png">
 
     <aside class="notes">
       <ul>
@@ -516,10 +428,7 @@ class Greeting extends React.Component {
   </section>
 
   <section>
-    <pre><code>
-&lt;Greeting message={() => {}} /&gt;
-
-</code></pre>
+    <img style="width: 70vw" src="/public/presentations/2017-09-29-strangeloop/fragile.gif">
 
     <aside class="notes">
       <ul>
@@ -535,18 +444,7 @@ class Greeting extends React.Component {
   </section>
 
   <section>
-    <pre><code>
-module Greeting = {
-  let component = ReasonReact.statelessComponent "Greeting";
-  let make ::message _children => {
-    ...component,
-    render: fun _self => <span> (ReasonReact.stringToElement message) </span>
-  };
-}
-
-&lt;Greeting message="Hello Strangeloop" /&gt;
-
-</code></pre>
+    <img style="width: 70vw" src="/public/presentations/2017-09-29-strangeloop/react3.png">
 
     <aside class="notes">
       <ul>
@@ -568,29 +466,7 @@ module Greeting = {
   </section>
 
   <section>
-    <pre><code>
-type action = | Click | Restart;
-type state = {clicks: int, restarts: int};
-
-let component = ReasonReact.reducerComponent "Greeting";
-let make _children => {
-  ...component,
-  initialState: fun () => {clicks: 0, restarts: 0},
-  reducer: fun action state =>
-    ReasonReact.Update @@ switch action {
-    | Click => {...state, clicks: state.clicks + 1}
-    | Restart => {clicks: 0, restarts: state.restarts + 1}
-    },
-  render: fun {state, reduce} => (
-    &lt;span&gt;
-      &lt;button onClick=(reduce (fun _event =&gt; Click))&gt;Click Me&lt;/button&gt;
-      (ReasonReact.stringToElement @@ string_of_int state.clicks)
-      &lt;button onClick=(reduce (fun _event =&gt; Restart))&gt;Restart Me&lt;/button&gt;
-    &lt;/span&gt;
-  )
-};
-
-</code></pre>
+    <img style="width: 70vw" src="/public/presentations/2017-09-29-strangeloop/react4.png">
 
     <aside class="notes">
       <ul>
@@ -610,19 +486,7 @@ let make _children => {
   </section>
 
   <section>
-    <pre><code>
-type action = | Click | Restart;
-type state = {clicks: int, restarts: int};
-
-let component = ReasonReact.reducerComponent "Greeting";
-let make _children => {
-  ...component,
-  initialState: fun (): state => ...
-  reducer: fun (action: action) (state: state) => ...
-  render: fun {(state: state), reduce} => ...
-};
-
-</code></pre>
+    <img style="width: 70vw" src="/public/presentations/2017-09-29-strangeloop/react5.png">
 
     <aside class="notes">
       <ul>
@@ -639,10 +503,7 @@ let make _children => {
   </section>
 
   <section>
-    <pre><code>
-initialState: fun (): state => {clicks: 0, restarts: 0},
-
-</code></pre>
+    <img style="width: 70vw" src="/public/presentations/2017-09-29-strangeloop/react6.png">
 
     <aside class="notes">
       <ul>
@@ -658,14 +519,7 @@ initialState: fun (): state => {clicks: 0, restarts: 0},
   </section>
 
   <section>
-    <pre><code>
-reducer: fun (action: action) (state: state) =>
-  ReasonReact.Update @@ switch action {
-  | Click => {...state, clicks: state.clicks + 1}
-  | Restart => {clicks: 0, restarts: state.restarts + 1}
-  },
-
-</code></pre>
+    <img style="width: 70vw" src="/public/presentations/2017-09-29-strangeloop/react7.png">
 
     <aside class="notes">
       <ul>
@@ -683,17 +537,7 @@ reducer: fun (action: action) (state: state) =>
   </section>
 
   <section>
-    <pre><code>
-render: fun {(state: state), reduce} => (
-  let clickMessage = "Clicked " ^ (string_of_int state.clicks) ^ " times(s)";
-  &lt;span&gt;
-    &lt;button onClick=(reduce (fun _event =&gt; Click))&gt;Click Me&lt;/button&gt;
-    (ReasonReact.stringToElement clickMessage)
-    &lt;button onClick=(reduce (fun _event =&gt; Restart))&gt;Restart Me&lt;/button&gt;
-  &lt;/span&gt;
-)
-
-</code></pre>
+    <img style="width: 70vw" src="/public/presentations/2017-09-29-strangeloop/react8.png">
 
     <aside class="notes">
       <ul>
@@ -722,83 +566,6 @@ render: fun {(state: state), reduce} => (
 
     <aside class="content">
       For any Elm afficionados out there, if all of this is starting to look familiar to you, it definitely should. Thanks to the elm architecture, the quality of frontend data manipulation and event handling has increased manyfold, and Reason's state management has it's learnings in the same FRP that underlies Elm.
-    </aside>
-  </section>
-
-  <section>
-    <h2>interop?!?1</h2>
-
-    <aside class="notes">
-      <ul>
-        <li>interop?</li>
-        <li>rewrite all in reason</li>
-        <li>invested in smooth transition js -> blended -> reason</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      What about interop with the JS ecosystem? Once we're writing ReasonReact components are we required to re-write everything in Reason? Definitely not! Reason is very invested in providing a smooth transition from a JavaScript application, to a blended application and possibly through to an entirely Reason application.
-    </aside>
-  </section>
-
-  <section>
-    <pre><code>
-module Wrapper = {
-  external myJSReactClass : ReasonReact.reactClass = "myJSReactClass" [@@bs.module];
-
-  let make name::(name: string) age::(age: int) children =>
-    ReasonReact.wrapJsForReason
-      reactClass::myJSReactClass
-      props::{"name": name, "age": age}
-      children;
-};
-
-&lt;Wrapper name="Jacob" age=27 /&gt;
-    </code></pre>
-
-    <aside class="notes">
-      <ul>
-        <li>use js from reason, wrap to make consumable</li>
-        <li>use the bs.module ffi to import</li>
-        <li>define wrapper make using wrapJSForReason</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      In order to use a JavaScript component from inside Reason, we have to wrap it to make it consumable. We "import" the JavaScript React component using a Bucklescript external declaration, binding it to the value myJsReactClass. We then define a ReasonReact wrapper around the JavaScript component and export that. This then allows us to use the JavaScript component as if it were a ReasonReact component.
-    </aside>
-  </section>
-
-  <section>
-    <div>
-      <pre><code>
-/* in myReasonComponent.re */
-let component = ...;
-let make ...;
-
-let default =
-  ReasonReact.wrapReasonForJs
-    ::component
-    (fun jsProps => make name::jsProps##name age::?(Js.Nullable.to_opt jsProps##age) [||]);
-      </code></pre>
-      <pre><code>
-/* in some js file */
-var MyReasonComponent = require('/path/to/myReasonComponent.js');
-// make sure you're passing the correct data types!
-&lt;MyReasonComponent name="John" /&gt;
-      </code></pre>
-    </div>
-
-    <aside class="notes">
-      <ul>
-        <li>use reason in js, export as default using wrapReasonForJs</li>
-        <li>use let default = so bs transpile to export default / module.exports = </li>
-        <li>import and use as normal</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      For the opposite effect we instead wrap our created component with a different helper method that allows it to be required directly from JavaScript and used in place of an ordinary React component.
     </aside>
   </section>
 
@@ -890,12 +657,7 @@ var MyReasonComponent = require('/path/to/myReasonComponent.js');
   </section>
 
   <section>
-    <pre></code>
-type name = string;
-type age = int;
-type person = Person name age;
-
-</code></pre>
+    <img style="height: 50vh" src="/public/presentations/2017-09-29-strangeloop/validations1.png">
 
     <aside class="notes">
       <ul>
@@ -909,15 +671,7 @@ type person = Person name age;
   </section>
 
   <section>
-    <pre><code>
-const valid = validate(person);
-if (!valid) {
-  throw new Error('invalid fields');
-}
-
-save(person);
-
-</code></pre>
+    <img style="height: 60vh" src="/public/presentations/2017-09-29-strangeloop/validations2.png">
 
     <aside class="notes">
       <ul>
@@ -952,10 +706,7 @@ save(person);
   </section>
 
   <section>
-    <pre><code>
-type t 'a = string
-
-</code></pre>
+    <img style="height: 10vh" src="/public/presentations/2017-09-29-strangeloop/validations3.png">
 
     <aside class="notes">
       <ul>
@@ -970,14 +721,7 @@ type t 'a = string
   </section>
 
   <section>
-    <pre><code>
-type t 'a = string;
-let (x: t int) = "foo";
-let (y: t float) = "bar";
-
-Js.log (x ^ y); /* prints foobar */
-
-</code></pre>
+    <img style="height: 50vh" src="/public/presentations/2017-09-29-strangeloop/validations4.png">
 
     <aside class="notes">
       <ul>
@@ -996,17 +740,7 @@ Js.log (x ^ y); /* prints foobar */
   </section>
 
   <section>
-    <pre><code>
-/* must not compile /*
-PersonValidator.make name age
-  |> Person.save;
-
-/* should compile */
-PersonValidator.make name age
-  |> Person.validate
-  |> Person.save;
-
-</code></pre>
+    <img style="height: 60vh" src="/public/presentations/2017-09-29-strangeloop/validations5.png">
 
     <aside class="notes">
       <ul>
@@ -1025,28 +759,7 @@ PersonValidator.make name age
   </section>
 
   <section>
-    <pre><code>
-module type PersonValidator = {
-  type valid;
-  type invalid;
-  type t 'a;
-
-  let make: string => int => t invalid;
-  let validate: t invalid => option (t valid);
-};
-
-module PersonValidator: PersonValidator = {
-  type valid;
-  type invalid;
-  type t 'a = Person string int;
-
-  let make name age => Person name age;
-  let validate (Person name age) => {
-    (String.length name < 0 || age < 0) ? None : Some (Person name age);
-  };
-};
-
-</code></pre>
+    <img style="height: 80vh" src="/public/presentations/2017-09-29-strangeloop/validations6.png">
 
     <aside class="notes">
       <ul>
@@ -1061,14 +774,7 @@ module PersonValidator: PersonValidator = {
   </section>
 
   <section>
-    <pre><code>
-module type PersonValidator = {
-  type valid;
-  type invalid;
-  type t 'a;
-};
-
-</code></pre>
+    <img style="height: 40vh" src="/public/presentations/2017-09-29-strangeloop/validations7.png">
 
     <aside class="notes">
       <ul>
@@ -1086,12 +792,7 @@ module type PersonValidator = {
   </section>
 
   <section>
-    <pre><code>
-module type PersonValidator = {
-  let make: string => int => t invalid;
-};
-
-</code></pre>
+    <img style="height: 40vh" src="/public/presentations/2017-09-29-strangeloop/validations8.png">
 
     <aside class="notes">
       <ul>
@@ -1107,12 +808,7 @@ module type PersonValidator = {
   </section>
 
   <section>
-    <pre><code>
-module type PersonValidator = {
-  let validate: t invalid => option (t valid);
-};
-
-</code></pre>
+    <img style="height: 40vh" src="/public/presentations/2017-09-29-strangeloop/validations9.png">
 
     <aside class="notes">
       <ul>
@@ -1128,12 +824,7 @@ module type PersonValidator = {
   </section>
 
   <section>
-    <pre><code>
-module type PersonValidator = {
-  let save: t valid => t valid;
-};
-
-</code></pre>
+    <img style="height: 40vh" src="/public/presentations/2017-09-29-strangeloop/validations10.png">
 
     <aside class="notes">
       <ul>
@@ -1153,12 +844,7 @@ module type PersonValidator = {
   </section>
 
   <section>
-    <pre><code>
-PersonValidator.make "Jacob Bass" 27
-  |> PersonValidator.validate
-  |> Option.fmap PersonValidator.save;
-
-</code></pre>
+    <img style="height: 30vh" src="/public/presentations/2017-09-29-strangeloop/validations11.png">
 
     <aside class="notes">
       <ul>
@@ -1175,12 +861,7 @@ PersonValidator.make "Jacob Bass" 27
   </section>
 
   <section>
-    <pre><code>
-PersonValidator.make "Too Young" (-1)
-  |> PersonValidator.validate
-  |> Option.fmap PersonValidator.save;
-
-</code></pre>
+    <img style="height: 30vh" src="/public/presentations/2017-09-29-strangeloop/validations12.png">
 
     <aside class="notes">
       <ul>
@@ -1196,14 +877,7 @@ PersonValidator.make "Too Young" (-1)
     </aside>
   </section>
   <section>
-
-    <pre><code>
-let notValid = PersonValidator.make "Sneaky Jacob Bass" 27;
-PersonValidator.save notValid;
-
-/* Error: type t invalid is not compatible with t valid for save */
-
-</code></pre>
+    <img style="height: 30vh" src="/public/presentations/2017-09-29-strangeloop/validations13.png">
 
     <aside class="notes">
       <ul>
@@ -1220,14 +894,7 @@ PersonValidator.save notValid;
   </section>
 
   <section>
-    <pre><code>
-let (notValid: PersonValidator.t PersonValidator.valid) =
-  PersonValidator.make "Really Sneaky Jacob Bass" 27;
-PersonValidator.save notValid;
-
-/* Error: type t valid is not compatible with type t invalid returned by make */
-
-</code></pre>
+    <img style="height: 30vh" src="/public/presentations/2017-09-29-strangeloop/validations14.png">
 
     <aside class="notes">
       <ul>
@@ -1243,19 +910,7 @@ PersonValidator.save notValid;
   </section>
 
   <section>
-    <pre><code>
-module PersonValidator: PersonValidator = {
-  type valid;
-  type invalid;
-  type t 'a = Person string int;
-
-  let make name age => Person name age;
-  let validate (Person name age) => {
-    (String.length name < 0 && age < 0) ? None : Some (Person name age);
-  };
-};
-
-</code></pre>
+    <img style="height: 80vh" src="/public/presentations/2017-09-29-strangeloop/validations15.png">
 
     <aside class="notes">
       <ul>
@@ -1336,26 +991,12 @@ module PersonValidator: PersonValidator = {
   </section>
 
   <section>
-    <pre><code>
-/* definitions */
-module type       AddInterface = { type t;         let add: t => t => t;  };
-
-module IntImpl:   AddInterface = { type t = int;   let add x y => x + y;  };
-
-module FloatImpl: AddInterface = { type t = float; let add x y => x +. y; };
-
-/* interpolation */
-module MixesIntImpl = { include IntImpl; };
-
-module UsesFloatImpl = { open FloatImpl; let addition x y => add x y; };
-    </code></pre>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/abstractions1.png">
 
     <aside class="notes">
       <ul>
         <li>defines a module type interface impl</li>
         <li>inner impl supplies t</li>
-        <li>like ruby, openable and includeable. libs, mixins and imports</li>
-        <li>globally available namespaces to module(file) name</li>
       </ul>
     </aside>
 
@@ -1363,36 +1004,31 @@ module UsesFloatImpl = { open FloatImpl; let addition x y => add x y; };
       The first definition in this snippet defines a module type. This type will define the interface for any module that implements it. In this case we require that anything that implements AddInterface must at least have some type t, which is kept abstract, and a function add that takes two ts and returns a t.
 
       <br /><br />We then come to our two implementations, IntImpl and FloatImpl. We can see that the inner implementation of the interface can supply a t that is concrete or abstract. In these cases it is concrete, but if it was a type that contained constructors then we wouldn't be able to access them outside of the module since t is abstract, allowing for privacy.
+  </section>
+
+  <section>
+    <img style="height: 50vh" src="/public/presentations/2017-09-29-strangeloop/abstractions2.png">
+
+    <aside class="notes">
+      <ul>
+        <li>like ruby, openable and includeable. libs, mixins and imports</li>
+        <li>globally available namespaces to module(file) name</li>
+      </ul>
 
       <br /><br />Much like Ruby modules, Reason modules are both usable directly, open-able and include-able, allowing for their usage as libraries, mixins and imports effectively. When included, all of the values and types on the interface will be written to the module it is being included in, and therefor available to consumers of that module. When opened, all of the types and values will be available inside the scope of the module, but not outside of it.
     </aside>
   </section>
 
   <section>
-    <pre><code>
-module type Monoid = { type t;       let mempty : t; let mappend : t => t => t; };
-
-module IntAdd      = { type t = int; let mempty = 0; let mappend x y => x + y;  };
-
-module IntMult     = { type t = int; let mempty = 1; let mappend x y => x * y; let foo = "bar";  };
-
-let mappendList
-  (type a)
-  ((module M): (module Monoid with type t = a))
-  (l: list a) =>
-    List.fold_right M.mappend l M.mempty;
-
-mappendList (module IntAdd) [1, 2, 3, 4]; /* returns 10 */
-mappendList (module IntMult) [1, 2, 3, 4]; /* returns 24 */
-    </code></pre>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/abstractions3.png">
 
     <aside class="notes">
       <ul>
         <li>first class citizens values func args. to vis define</li>
         <li>incomplete monoid interface mempty and mappend</li>
-        <li>define impl for add and mult</li>
         <li>mappendlist generic in a take module some list of a</li>
         <li>need generic a to match list to module without exposing impl</li>
+        <li>define impl for add and mult</li>
         <li>can apply different compatible modules. superset at least</li>
       </ul>
     </aside>
@@ -1402,11 +1038,26 @@ mappendList (module IntMult) [1, 2, 3, 4]; /* returns 24 */
 
       <br /><br /> We define an incomplete Monoid interface as having an abstract type, t for the type the Monoid is implemented for. It has a value, mempty, that indicates the base value for combination and a method mappend that combines values of this type t.
 
-      <br /><br />Then, defining implementations for IntAdd and IntMult gives us some Monoid modules we can use. We then define mappendList to be generic for some type a, to take a module that implements Monoid, and constrain it to reference it's internal type t as being of type a, and some list l that contains values of type a.
+      <br /><br />We then define mappendList to be generic for some type a, to take a module that implements Monoid, and constrain it to reference it's internal type t as being of type a, and some list l that contains values of type a.
 
       <br /><br />We need to use this generic type to allow us to sidestep the fact that t is abstract inside Monoid and so cannot be easily referenced when converting Monoid to a first class module. This was we can set an equality between Monoid.t and list of a without leaking implementation details.
+    </aside>
+  </section>
 
-      <br /><br />Now that we've defined our function, we can apply different modules that implement Monoid to mappendList and get back different results, all without changing the behaviour of the function. This is the power of combining generics with first class modules. We should also notice that IntMult is a superset of Monoid, and that Reason's type system allows us to supply modules that "at least" implement the required interface.
+  <section>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/abstractions4.png">
+
+    <aside class="notes">
+      <ul>
+        <li>define impl for add and mult</li>
+        <li>can apply different compatible modules. superset at least</li>
+      </ul>
+    </aside>
+
+    <aside class="content">
+      Then, defining implementations for IntAdd and IntMult gives us some Monoid modules we can use. Now that we've defined our function, we can apply different modules that implement Monoid to mappendList and get back different results, all without changing the behaviour of the function.
+
+      <br /><br />This is the power of combining generics with first class modules. We should also notice that IntMult is a superset of Monoid, and that Reason's type system allows us to supply modules that "at least" implement the required interface.
     </aside>
   </section>
 
@@ -1432,18 +1083,7 @@ mappendList (module IntMult) [1, 2, 3, 4]; /* returns 24 */
   </section>
 
   <section>
-    <pre><code>
-module Functor = {
-  module type Input = { type t; };
-
-  module type Output = { include Input; };
-
-  module Make (Input : Input) : (Output with type t = Input.t) => {
-    include Input;
-  };
-};
-
-    </code></pre>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/abstractions5.png">
 
     <aside class="notes">
       <ul>
@@ -1478,24 +1118,7 @@ module Functor = {
   </section>
 
   <section>
-    <pre><code>
-module Mappable = {
-  module type Input = {
-    type t 'a;
-    let fmap: ('a => 'b) => t 'a => t 'b;
-  };
-
-  module type Output = {
-    include Input;
-    let (<$>): ('a => 'b) => t 'a => t 'b;
-  };
-
-  module Make (I: Input) :(Output with type t 'a = I.t 'a) => {
-    include I;
-    let (<$>) = I.fmap;
-  };
-};
-    </code></pre>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/abstractions6.png">
 
     <aside class="notes">
       <ul>
@@ -1514,22 +1137,7 @@ module Mappable = {
   </section>
 
   <section>
-    <pre><code>
-module Option = {
-  include
-    Mappable.Make {
-      type t 'a = option 'a;
-      let fmap f opt =>
-        switch opt {
-        | None => None
-        | Some x => Some (f x)
-        };
-    };
-};
-
-Option.((fun a => a + 1) <$> Some 1);
-
-    </code></pre>
+    <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/abstractions7.png">
 
     <aside class="notes">
       <ul>
@@ -1547,15 +1155,7 @@ Option.((fun a => a + 1) <$> Some 1);
   <section>
     <div style="width: 100%">
       <h2>!adhoc</h2>
-      <pre><code>
-module Demo(F: Functor.Functor) => {
-  let eg1 x => F.fmap (fun a => a + 1) x;
-  let eg2 f x => F.fmap f x;
-};
-
-module ListDemo = Demo(List);
-module OptionDemo = Demo(Option);
-      </code></pre>
+      <img style="height: 70vh" src="/public/presentations/2017-09-29-strangeloop/abstractions8.png">
     </div>
 
     <aside class="notes">

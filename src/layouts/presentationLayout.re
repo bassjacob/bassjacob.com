@@ -70,15 +70,12 @@ let render {title, subtitle, content} => {
   <body>
     <div class="reveal">
       <div class="slides">
-        <section>
+        <section style="height: 100%; top: 0;">
           <h1>$(title)</h1>
-          <div style="position:absolute; z-index: 2; top: 100%; right: 1%;">
+          <div style="position:absolute; z-index: 2; bottom: 5%; right: 15%;">
             <a href="https://bassjacob.com">bassjacob.com</a>
           </div>
-          <div style="position:absolute; z-index: 2; width: 100%; top: 100%; text-align: center;">
-            $(subtitle)
-          </div>
-          <div style="position:absolute; z-index: 2; top: 100%; left: 1%;">
+          <div style="position:absolute; z-index: 2; bottom: 5%; left: 15%;">
             <a href="https://twitter.com/bassjacob">@bassjacob</a>
           </div>
         </section>
