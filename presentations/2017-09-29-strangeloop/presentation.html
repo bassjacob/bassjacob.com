@@ -120,31 +120,6 @@ function handleDates(type) {
       Dynamic typed programs tend to look a lot like this snippet. They grant us infinite freedom of expression, at the cost of predictability or sureness. We begin to rely on variable naming and comments rather than tools and compilers to instruct us on the allowed inputs and outputs. And we have to gate each command and listen for exceptions in order to avoid runtime errors.
     </aside>
   </section>
-  <section>
-    <pre><code class="language-java">
-final ApplicationContext context = new ClassPathXmlApplicationContext(SPRING_XML);
-final FizzBuzz myFizzBuzz = (FizzBuzz) context.getBean(STANDARD_FIZZ_BUZZ);
-final FizzBuzzUpperLimitParameter upperLimit = new DefaultFizzBuzzUpperLimitParameter();
-myFizzBuzz.fizzBuzz(fizzBuzzUpperLimit.obtainUpperLimitValue());
-
-((ConfigurableApplicationContext) context).close();
-
-</code></pre>
-
-    <aside class="notes">
-      <ul>
-        <li>trade freedom against predict</li>
-        <li>frustrating difficult unsafe</li>
-        <li>tradeoff makes sense</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      I think a lot of us trade this freedom against predictability, because a lot of languages that offer restriction do so in ways that are frustrating, or difficult, or even unsafe.
-
-      <br /><br />And the trade-off makes sense.
-    </aside>
-  </section>
 
   <section>
     <pre><code class="language-reason">
@@ -187,78 +162,6 @@ let handleDates (type: query) (date: elem 'a): (list 'b) => {
 
     <aside class="content">
       Introducing Reason. Reason is a language based on the fantastic OCaml language, a statically-typed functional programming language in the ML-family. Reason is currently being developed by Facebook primarily, and is positioned as an introductory fp language with similar goals to Elm. I'll be introducing concepts as we go, so don't worry if you don't know any OCaml or Reason or anything.
-    </aside>
-  </section>
-
-  <section>
-    <div style="min-width: 100%; text-align: left">
-      <h3>reasons for reason</h3>
-      <h2>rich data structures for abstraction</h2>
-    </div>
-
-    <aside class="content">
-      Reason contains a number of tools that enable you to write modular code that abstracts over common principles in a clean, safe way.
-    </aside>
-  </section>
-
-  <section>
-    <div style="min-width: 100%; text-align: left">
-      <h3>reasons for reason</h3>
-      <h2>pragmatic immutability</h2>
-    </div>
-
-    <aside class="content">
-      Reason is immutable by default, which saves you the need to enforce immutability through the use of a library which would slow down data access or usage. It also contains a number of escape hatches should you definitely need access to mutability, both as a primitive as well as through the very strong Object-Oriented flow.
-    </aside>
-  </section>
-
-  <section>
-    <div style="min-width: 100%; text-align: left">
-      <h3>reasons for reason</h3>
-      <h2>type inference</h2>
-    </div>
-
-    <aside class="notes">
-      <ul>
-        <li>favourite pieces type inference</li>
-        <li>so powerful only write for libraries</li>
-        <li>write flexible code quickly, refactor safely</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      One of my favourite pieces of Reason, the type inference is so strong you almost never need to write type annotations. I find myself writing types for libraries, or code where I want to design by interface, and letting the program infer from behaviour the majority of the time. This leads you to write code very flexibly without needing to worry about whether you've broken anything by changing a value or type.
-    </aside>
-  </section>
-
-  <section>
-    <div style="min-width: 100%; text-align: left">
-      <h3>reasons for reason</h3>
-      <h2>compilation targets</h2>
-    </div>
-
-    <aside class="content">
-      Reason has a number of compile-targets, including native, micro-controller, mobile native and JavaScript.
-    </aside>
-  </section>
-
-  <section>
-    <img width="70%" src="/public/assets/reasoninmyv8.png" />
-
-    <aside class="notes">
-      <ul>
-        <li>reason compelling for web and genpurpose</li>
-        <li>interop through FFI, bindings to external JS call from in reason</li>
-        <li>applies generally</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      It's actually this feature that makes reason so compelling, especially for web and general purpose development. Through the usage of the bucklescript compiler, it provides a wonderful interoperability with the JavaScript ecosystem.
-
-      <br /><br />To interop with JavaScript, we make use of the Foreign Function Interface (or FFI) from the bucklescript compiler. This allows you to write typed bindings to external JavaScript functions, and call them from inside Reason as if they were Reason functions.
-
-      <br /><br />While the majority of the techniques discussed apply to reason, and to statically typed fp in general, I'll also discuss some features that are unique to the JavaScript interop process.
     </aside>
   </section>
 </section>
@@ -650,132 +553,17 @@ module Greeting = {
         <li>reasonreact strongly typed compile</li>
         <li>is a module extends returned</li>
         <li>override defaults in make</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      In Reason, ReactJS components are strongly typed at compile time, conferring all the benefits outlined before. A reason-react component is a module with a method make, that "extends" the returned template component from the ReasonReact library, in this case a stateless component. We provide the render method, and take the defaults from the template.
-    </aside>
-  </section>
-
-  <section>
-    <pre><code>
-/* complains about unused a */
-let f a => 1;
-
-/* doesn't say a word */
-let f _a => 1;
-
-</code></pre>
-
-    <aside class="notes">
-      <ul>
-        <li>unused func param prepended with _</li>
-        <li>ignored in body if used error</li>
-        <li>normal not used warning</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      Some new syntax here, the concept of an unused function parameter. In a function definition, any variables prepended with _ will be ignored in the body of the function. This allows us to write the variable names for documentation or refactoring purposes but not worry about linting or compiler warnings about them not being used.
-
-      <br /><br />If we try access them from inside the function body the compile fails. As soon as we remove the underscore, the variable is considered available to the body of the function, as well as warned about.
-    </aside>
-  </section>
-  <section>
-    <pre><code>
-let add ::x=1 ::y=2 z => x + y;
-
-let addOne = add x::1;
-
-let three = addOne y::2 0;
-
-let addTwo = add y::2;
-
-let five = add x::2 1;
-
-let four = add 1;
-
-</code></pre>
-
-    <aside class="notes">
-      <ul>
-        <li>design partial application by name and position</li>
-        <li>func add, z terminal x y optional</li>
-        <li>apply in any order, done with terminal z</li>
-        <li>apply in different order, done with terminal z</li>
-        <li>apply only terminal z, defaults</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      Also new are labeled args. They allow us to design for partial application of a function, not only by position, but by name. So rather than a function you have to wrap in lambdas to build partially applied closures, or the liberal usage of flip that Haskell enjoys, you can define a function with labeled args and apply them in any order.
-
-      <br /><br />We create a function named add, that takes two labeled args x and y, and a non-labeled arg z. The z is important, as a non-labeled arg in a terminal position, it allows us to conside the labeled args optional, replaced by the defaults provided in the function definition.
-
-      <br /><br />We partially apply add by passing x bound to 1, which we then further apply by passing y bound to 2, and 0 in the terminal position. Because there is a non-labeled argument, Reason will not consider the function fully applied until at least the terminal non-labeled arg is applied. We can apply labeled args in any order, regardless of how they are defined.
-
-      <br /><br />We create a function called addTwo, this time first applying y bound to 2, then later applying x as 2, and 1 in the terminal position as z. Lastly, we see the greatest application of this feature. When defining four, we eschew both x and y, only choosing to apply z in the terminal position.
-
-      <br /><br />Given the final terminal arg, Reason will apply x and y automatically with their default args, setting them to 1 and 2 respectively and applying z, returning 4. Beautiful default args with full type safety!
-    </aside>
-  </section>
-
-  <section>
-    <pre><code>
-module Greeting = {
-  let component = ReasonReact.statelessComponent "Greeting";
-  let make ::message _children => {
-    ...component,
-    render: fun _self => <span> (ReasonReact.stringToElement message) </span>
-  };
-}
-
-&lt;Greeting message="Hello Strangeloop" /&gt;
-
-</code></pre>
-
-    <aside class="notes">
-      <ul>
-        <li>back2example ignore children since not using</li>
         <li>labeled args for message, infer type from usage</li>
         <li>children must be reactelement. use helpers to convert other types</li>
       </ul>
     </aside>
 
     <aside class="content">
-      Back to our example, we can see we use labeled args in our make function. We imply usage of a prop message, which the compiler will infer as of type string thanks to the usage of stringToElement in the body.
+      In Reason, ReactJS components are strongly typed at compile time, conferring all the benefits outlined before. A reason-react component is a module with a method make, that "extends" the returned template component from the ReasonReact library, in this case a stateless component. We provide the render method, and take the defaults from the template.
+
+      <br /><br />We can see we use labeled args in our make function. We imply usage of a prop message, which the compiler will infer as of type string thanks to the usage of stringToElement in the body.
 
       <br /><br />reason-react doesn't have as loose a definition of what can be passed as children. Anything other than a ReactJS element will fail to compile, requiring us to first convert the variable to an element using the provided helper.
-    </aside>
-  </section>
-
-  <section>
-    <pre><code>
-module Greeting = {
-  let component = ReasonReact.statelessComponent "Greeting";
-  let make ::message="Hello from Australia!" _children => {
-    ...component,
-    render: fun _self => <span> (ReasonReact.stringToElement message) </span>
-  };
-}
-
-&lt;Greeting message="Hello Strangeloop" /&gt; /* renders Hello Strangeloop */
-&lt;Greeting /&gt; /* renders Hello Australia */
-
-</code></pre>
-
-    <aside class="notes">
-      <ul>
-        <li>wotif sometimes message</li>
-        <li>msg has default children is in final position</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      What about if we wanted to sometimes pass a message, but fallback to a default. Because reason-react components are just Reason functions, we can lean on the syntax for labeled args just like we did before.
-
-      <br /><br />We give message a default value, and if we don't pass it when rendering the component, the default will be applied.
     </aside>
   </section>
 
@@ -1278,8 +1066,6 @@ module type PersonValidator = {
   type valid;
   type invalid;
   type t 'a;
-
-  /* the rest of the lines grey'd out */
 };
 
 </code></pre>
@@ -1704,9 +1490,9 @@ module Mappable = {
     let (<$>): ('a => 'b) => t 'a => t 'b;
   };
 
-  module Make (I: Input) :(Output with type t 'a = S.t 'a) => {
+  module Make (I: Input) :(Output with type t 'a = I.t 'a) => {
     include I;
-    let (<$>) = S.fmap;
+    let (<$>) = I.fmap;
   };
 };
     </code></pre>
@@ -1854,17 +1640,17 @@ module OptionDemo = Demo(Option);
 
   <section>
     <div>
-      <h2>tooling and framework fatigue</h2>
-      <img src="/public/assets/projectlogos.png" />
+      <h2>taming the meta-langauge</h2>
+      <img width="75%" src="/public/assets/metalang.png" />
     </div>
 
     <aside class="notes">
       <ul>
         <li>years of tooling fatigue</li>
-        <li>number of tools exploded churn not slowing down</li>
+        <li>weight and depth of information, tooling, books, conferences, tutorials just to ship</li>
+        <li>if you think monad tutorials are bad, how many different ways to run redux</li>
         <li>reason ships rock solid</li>
         <li>improving devX not cognitive load</li>
-        <li>push complexity below the language layer</li>
       </ul>
     </aside>
 
@@ -1872,24 +1658,6 @@ module OptionDemo = Demo(Option);
       The last couple of years on the web have been years of tooling fatigue. Over the last three years, the number of tools needed to ship a well-architected application has exploded, and the rate of churn hasn't slowed down.
 
       <br /><br />At its core, Reason ships a rock-solid, stable development stack, focused on improving developer experience without increasing cognitive load. By focusing on one or two tools, we can push complexity into this stable layer.
-    </aside>
-  </section>
-  <section>
-    <div>
-      <h2>taming the meta-language</h2>
-      <img width="75%" src="/public/assets/metalang.png" />
-    </div>
-
-    <aside class="notes">
-      <ul>
-        <li>in webdev, frameworks are all the rage</li>
-        <li>weight and depth of information, tooling, books, conferences, tutorials just to ship</li>
-        <li>if you think monad tutorials are bad, how many different ways to run redux</li>
-      </ul>
-    </aside>
-
-    <aside class="content">
-      In web development at the moment, frameworks are all the rage. We hear about how libraries are the new compilers. We see first hand the weight and depth of tooling needed to bring an application to production.
     </aside>
   </section>
 
